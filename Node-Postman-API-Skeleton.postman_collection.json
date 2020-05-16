@@ -1,0 +1,909 @@
+{
+	"info": {
+		"_postman_id": "b92ee9b3-0266-40f2-8e1d-ec0270c7125e",
+		"name": "Node-Postman-API-Skeleton",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "/register",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "admin@admin.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "12345",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/auth/register",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/verify",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id",
+									"value": "741f3086-b296-4dff-8c9c-e3d88f19be53",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/auth/verify",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"auth",
+								"verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/forgot",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "admin@admin.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/auth/forgot",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"auth",
+								"forgot"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/reset",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id",
+									"value": "f5b08991-02fc-4f3d-9a32-6d703bef5c57",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "12345",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/auth/reset",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"auth",
+								"reset"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "50b101eb-0e19-458d-97c9-872a97d9b920",
+								"exec": [
+									"var data = pm.response.json();",
+									"",
+									"pm.environment.set(\"authToken\", data.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "admin@admin.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "12345",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/auth/login",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/token",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/auth/token",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"auth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "/users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/api/users?filter=ad&fields=name,email&page=1&limit=10&sort=name&order=-1",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "ad"
+								},
+								{
+									"key": "fields",
+									"value": "name,email"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "sort",
+									"value": "name"
+								},
+								{
+									"key": "order",
+									"value": "-1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/users",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "New User",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "myemail@email.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "12345",
+									"type": "text"
+								},
+								{
+									"key": "role",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "123123",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "Bucaramamga",
+									"type": "text"
+								},
+								{
+									"key": "country",
+									"value": "Colombia",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/users",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/users/:id",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/users/5aab2443ef417d2d19e6c8f2",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"5aab2443ef417d2d19e6c8f2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/users/:id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/api/users/5aa1c2c35ef7a4e97b5e995a",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"5aa1c2c35ef7a4e97b5e995a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/users/:id",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "New Name",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "new@email.com",
+									"type": "text"
+								},
+								{
+									"key": "role",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "12345",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "Cali",
+									"type": "text"
+								},
+								{
+									"key": "country",
+									"value": "Colombia",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/users/5aa1c2c35ef7a4e97b5e995a?",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"5aa1c2c35ef7a4e97b5e995a"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "id ASC",
+									"disabled": true
+								},
+								{
+									"key": "skip",
+									"value": "3",
+									"disabled": true
+								},
+								{
+									"key": "where",
+									"value": "{ 'email' : { startsWith : 'f' } }",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "profile",
+			"item": [
+				{
+					"name": "/profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/api/profile",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/profile",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "My Name",
+									"type": "text"
+								},
+								{
+									"key": "urlTwitter",
+									"value": "https://hello.com",
+									"type": "text"
+								},
+								{
+									"key": "urlGitHub",
+									"value": "https://hello.io",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "444444",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "Boston2",
+									"type": "text"
+								},
+								{
+									"key": "country",
+									"value": "Colombia2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/profile",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/profile/changePassword",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "oldPassword",
+									"value": "12345",
+									"type": "text"
+								},
+								{
+									"key": "newPassword",
+									"value": "12345",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/profile/changePassword",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"profile",
+								"changePassword"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "cities",
+			"item": [
+				{
+					"name": "/cities/all",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/api/cities/all",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"cities",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/cities",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/api/cities?filter=Bucaramanga&fields=name&page=1&limit=5&sort=name&order=1",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"cities"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "Bucaramanga"
+								},
+								{
+									"key": "fields",
+									"value": "name"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "5"
+								},
+								{
+									"key": "sort",
+									"value": "name"
+								},
+								{
+									"key": "order",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/cities",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Miami",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/cities",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"cities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/cities/:id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/api/cities/5bd08db979bbc504c14ebfdd",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"cities",
+								"5bd08db979bbc504c14ebfdd"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/cities/:id",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Seatle2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/cities/5bd08db979bbc504c14ebfdd?",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"cities",
+								"5bd08db979bbc504c14ebfdd"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "id ASC",
+									"disabled": true
+								},
+								{
+									"key": "skip",
+									"value": "3",
+									"disabled": true
+								},
+								{
+									"key": "where",
+									"value": "{ 'email' : { startsWith : 'f' } }",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/cities/:id",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/cities/5b38171b1843d58427c5d6c4",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"cities",
+								"5b38171b1843d58427c5d6c4"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "765345f8-1dc7-4cc9-a0be-8b059bad3e98",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "5b40a4b7-7146-431d-8aba-6837b2c13b8b",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

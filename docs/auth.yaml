@@ -1,0 +1,41 @@
+swagger: '2.0'
+schemes:
+  - 'https'
+  - 'http'
+paths:
+  /auth/register:
+    post:
+      tags:
+        - 認證
+      summary: '註冊新帳號'
+      description: '註冊新使用者帳號密碼'
+      consumes:
+        - 'application/x-www-form-urlencoded'
+      produces:
+        - 'application/xml'
+        - 'application/json'
+      parameters:
+        - name: 'name'
+          in: 'formData'
+          description: '使用者在系統中的顯示名稱'
+          required: true
+          type: 'string'
+        - name: 'email'
+          in: 'formData'
+          description: '使用者登入信箱'
+          required: true
+          type: 'string'
+        - name: 'password'
+          in: 'formData'
+          description: '使用者登入密碼'
+          required: true
+          type: 'string'
+      responses:
+        '200':
+          description: '成功新增使用者'
+        '405':
+          description: '輸入數值錯誤'
+      security:
+        - petstore_auth:
+            - 'write:user'
+            - 'read:user'

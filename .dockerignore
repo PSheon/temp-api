@@ -1,0 +1,6 @@
+.git
+.github
+.nyc_output
+logs
+node_modules
+uploads
