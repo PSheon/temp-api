@@ -7,7 +7,7 @@ const server = require('../server')
 const should = chai.should()
 const loginDetails = {
   email: 'admin@admin.com',
-  password: '12345'
+  password: '12345678'
 }
 let token = ''
 
@@ -47,7 +47,7 @@ describe('*********** PROFILE ***********', () => {
         .end((err, res) => {
           res.should.have.status(200)
           res.body.should.be.an('object')
-          res.body.should.include.keys('name', 'email')
+          res.body.should.include.keys('memberId', 'email', 'displayName')
           done()
         })
     })
@@ -68,77 +68,70 @@ describe('*********** PROFILE ***********', () => {
         })
     })
     it('it should UPDATE profile', (done) => {
-      const user = {
-        name: 'Test123456',
-        urlTwitter: 'https://hello.com',
-        urlGitHub: 'https://hello.io',
-        phone: '123123123',
-        city: 'Bucaramanga',
-        country: 'Colombia'
+      const newProfile = {
+        displayName: 'Test123456',
+        phone: '+886918765432',
+        shortcuts: ['bot-setting', 'referrals']
       }
       chai
         .request(server)
         .patch('/api/profile')
         .set('Authorization', `Bearer ${token}`)
-        .send(user)
+        .send(newProfile)
         .end((err, res) => {
           res.should.have.status(200)
           res.body.should.be.a('object')
-          res.body.should.have.property('name').eql('Test123456')
-          res.body.should.have.property('urlTwitter').eql('https://hello.com')
-          res.body.should.have.property('urlGitHub').eql('https://hello.io')
-          res.body.should.have.property('phone').eql('123123123')
-          res.body.should.have.property('city').eql('Bucaramanga')
-          res.body.should.have.property('country').eql('Colombia')
+          res.body.should.have.property('displayName').eql('Test123456')
+          res.body.should.have.property('phone').eql('+886918765432')
           done()
         })
     })
-    it('it should NOT UPDATE profile with email that already exists', (done) => {
-      const user = {
-        email: 'programmer@programmer.com'
-      }
-      chai
-        .request(server)
-        .patch('/api/profile')
-        .set('Authorization', `Bearer ${token}`)
-        .send(user)
-        .end((err, res) => {
-          res.should.have.status(422)
-          res.body.should.be.a('object')
-          res.body.should.have.property('errors')
-          done()
-        })
-    })
-    it('it should NOT UPDATE profile with not valid URL´s', (done) => {
-      const user = {
-        name: 'Test123456',
-        urlTwitter: 'hello',
-        urlGitHub: 'hello',
-        phone: '123123123',
-        city: 'Bucaramanga',
-        country: 'Colombia'
-      }
-      chai
-        .request(server)
-        .patch('/api/profile')
-        .set('Authorization', `Bearer ${token}`)
-        .send(user)
-        .end((err, res) => {
-          res.should.have.status(422)
-          res.body.should.be.a('object')
-          res.body.should.have.property('errors').that.has.property('msg')
-          res.body.errors.msg[0].should.have
-            .property('msg')
-            .eql('NOT_A_VALID_URL')
-          done()
-        })
-    })
+    // it('it should NOT UPDATE profile with email that already exists', (done) => {
+    //   const user = {
+    //     email: 'programmer@programmer.com'
+    //   }
+    //   chai
+    //     .request(server)
+    //     .patch('/api/profile')
+    //     .set('Authorization', `Bearer ${token}`)
+    //     .send(user)
+    //     .end((err, res) => {
+    //       res.should.have.status(422)
+    //       res.body.should.be.a('object')
+    //       res.body.should.have.property('errors')
+    //       done()
+    //     })
+    // })
+    // it('it should NOT UPDATE profile with not valid URL´s', (done) => {
+    //   const user = {
+    //     name: 'Test123456',
+    //     urlTwitter: 'hello',
+    //     urlGitHub: 'hello',
+    //     phone: '123123123',
+    //     city: 'Bucaramanga',
+    //     country: 'Colombia'
+    //   }
+    //   chai
+    //     .request(server)
+    //     .patch('/api/profile')
+    //     .set('Authorization', `Bearer ${token}`)
+    //     .send(user)
+    //     .end((err, res) => {
+    //       res.should.have.status(422)
+    //       res.body.should.be.a('object')
+    //       res.body.should.have.property('errors').that.has.property('msg')
+    //       res.body.errors.msg[0].should.have
+    //         .property('msg')
+    //         .eql('NOT_A_VALID_URL')
+    //       done()
+    //     })
+    // })
   })
   describe('/POST profile/changePassword', () => {
-    it('it should NOT change password', (done) => {
+    it('it should NOT change password with wrong password', (done) => {
       const data = {
-        oldPassword: '123456',
-        newPassword: '123456'
+        oldPassword: '12345677',
+        newPassword: '12345678'
       }
       chai
         .request(server)
@@ -171,14 +164,14 @@ describe('*********** PROFILE ***********', () => {
           res.body.should.have.property('errors').that.has.property('msg')
           res.body.errors.msg[0].should.have
             .property('msg')
-            .eql('PASSWORD_TOO_SHORT_MIN_5')
+            .eql('PASSWORD_TOO_SHORT_MIN_8')
           done()
         })
     })
     it('it should change password', (done) => {
       const data = {
-        oldPassword: '12345',
-        newPassword: '12345'
+        oldPassword: '12345678',
+        newPassword: '12345678'
       }
       chai
         .request(server)

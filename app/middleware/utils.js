@@ -34,7 +34,7 @@ exports.getCountry = (req) =>
  * @param {*} req - request object
  */
 exports.getAction = (req) => {
-  if (req.originalUrl.startsWith('/auth/token')) {
+  if (req.originalUrl.startsWith('/auth/access-token')) {
     return 'refresh'
   }
   if (req.originalUrl.startsWith('/auth/login')) {
@@ -59,9 +59,7 @@ exports.handleError = (res, err) => {
   }
   // Sends error to user
   res.status(err.code || 500).json({
-    errors: {
-      msg: err.message || '發生未預期的狀況.'
-    }
+    msg: err.message || '發生未預期的狀況.'
   })
 }
 

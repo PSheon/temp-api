@@ -6,41 +6,26 @@ const { check } = require('express-validator')
  * Validates update profile request
  */
 exports.updateProfile = [
-  check('name')
+  check('displayName')
     .exists()
     .withMessage('MISSING')
     .not()
     .isEmpty()
-    .withMessage('IS_EMPTY'),
+    .withMessage('IS_EMPTY')
+    .trim(),
+  check('photoURL').optional().not().isEmpty().withMessage('IS_EMPTY').trim(),
   check('phone')
-    .exists()
-    .withMessage('MISSING')
-    .not()
-    .isEmpty()
-    .withMessage('IS_EMPTY')
-    .trim(),
-  check('city')
-    .exists()
-    .withMessage('MISSING')
-    .not()
-    .isEmpty()
-    .withMessage('IS_EMPTY')
-    .trim(),
-  check('country')
-    .exists()
-    .withMessage('MISSING')
-    .not()
-    .isEmpty()
-    .withMessage('IS_EMPTY')
-    .trim(),
-  check('urlTwitter')
     .optional()
-    .custom((v) => (v === '' ? true : validator.isURL(v)))
-    .withMessage('NOT_A_VALID_URL'),
-  check('urlGitHub')
+    .custom((phone) =>
+      validator.isMobilePhone(phone, ['zh-TW'], { strictMode: true })
+    )
+    .withMessage('WRONG_MOBILE_PHONE')
+    .trim(),
+  check('shortcuts')
     .optional()
-    .custom((v) => (v === '' ? true : validator.isURL(v)))
-    .withMessage('NOT_A_VALID_URL'),
+    .isArray({ min: 1, max: 6 })
+    .withMessage('MUST_HAVE_ONE_SHORTCUT_MAX_TO_SIX')
+    .trim(),
   (req, res, next) => {
     validationResult(req, res, next)
   }
@@ -56,18 +41,18 @@ exports.changePassword = [
     .isEmpty()
     .withMessage('IS_EMPTY')
     .isLength({
-      min: 5
+      min: 8
     })
-    .withMessage('PASSWORD_TOO_SHORT_MIN_5'),
+    .withMessage('PASSWORD_TOO_SHORT_MIN_8'),
   check('newPassword')
     .optional()
     .not()
     .isEmpty()
     .withMessage('IS_EMPTY')
     .isLength({
-      min: 5
+      min: 8
     })
-    .withMessage('PASSWORD_TOO_SHORT_MIN_5'),
+    .withMessage('PASSWORD_TOO_SHORT_MIN_8'),
   (req, res, next) => {
     validationResult(req, res, next)
   }

@@ -26,16 +26,26 @@ const generateToken = (user) => {
     Math.floor(Date.now() / 1000) + 60 * PROCESS_ENV.JWT_EXPIRATION_IN_MINUTES
 
   // returns signed and encrypted token
-  return auth.encrypt(
-    jwt.sign(
-      {
-        data: {
-          _id: user
-        },
-        exp: expiration
+  // return auth.encrypt(
+  //   jwt.sign(
+  //     {
+  //       data: {
+  //         _id: user
+  //       },
+  //       exp: expiration
+  //     },
+  //     PROCESS_ENV.JWT_SECRET
+  //   )
+  // )
+  // TODO 改為加密方式
+  return jwt.sign(
+    {
+      data: {
+        _id: user
       },
-      PROCESS_ENV.JWT_SECRET
-    )
+      exp: expiration
+    },
+    PROCESS_ENV.JWT_SECRET
   )
 }
 
@@ -46,10 +56,19 @@ const generateToken = (user) => {
 const setUserInfo = (req) => {
   let user = {
     _id: req._id,
-    name: req.name,
+    memberId: req.memberId,
     email: req.email,
     role: req.role,
-    verified: req.verified
+    google: req.google ? req.google : null,
+    displayName: req.displayName,
+    photoURL: req.photoURL,
+    phone: req.phone,
+    shortcuts: req.shortcuts,
+    referralParent: req.referralParent,
+    referralChildList: req.referralChildList,
+    lastPasswordUpdatedAt: req.lastPasswordUpdatedAt,
+    verified: req.verified,
+    active: req.active
   }
   // Adds verification for testing purposes
   if (process.env.NODE_ENV !== 'production') {
@@ -224,7 +243,7 @@ const passwordsDoNotMatch = async (user) => {
 const registerUser = async (req) => {
   return new Promise((resolve, reject) => {
     const user = new User({
-      name: req.name,
+      memberId: req.memberId,
       email: req.email,
       password: req.password,
       verification: uuid.v4()
@@ -256,13 +275,13 @@ const returnRegisterToken = (item, userInfo) => {
 
 /**
  * Checks if verification id exists for user
- * @param {string} id - verification id
+ * @param {string} _id - verification id
  */
-const verificationExists = async (id) => {
+const verificationExists = async (_id) => {
   return new Promise((resolve, reject) => {
     User.findOne(
       {
-        verification: id,
+        verification: _id,
         verified: false
       },
       (err, user) => {
@@ -321,6 +340,20 @@ const updatePassword = async (password, user) => {
     user.save((err, item) => {
       utils.itemNotFound(err, item, reject, 'NOT_FOUND')
       resolve(item)
+    })
+  })
+}
+
+/**
+ * Updates a user role in database
+ * @param {string} password - new role
+ * @param {Object} user - user object
+ */
+const updateRole = async (_id, role) => {
+  return new Promise((resolve, reject) => {
+    User.findOneAndUpdate(_id, { role }, (err, user) => {
+      utils.itemNotFound(err, user, reject, 'NOT_FOUND')
+      resolve(user)
     })
   })
 }
@@ -409,7 +442,7 @@ const forgotPasswordResponse = (item) => {
  */
 const checkPermissions = async (data, next) => {
   return new Promise((resolve, reject) => {
-    User.findById(data.id, (err, result) => {
+    User.findById(data._id, (err, result) => {
       utils.itemNotFound(err, result, reject, 'NOT_FOUND')
       if (data.roles.indexOf(result.role) > -1) {
         return resolve(next())
@@ -426,7 +459,9 @@ const checkPermissions = async (data, next) => {
 const getUserIdFromToken = async (token) => {
   return new Promise((resolve, reject) => {
     // Decrypts, verifies and decode token
-    jwt.verify(auth.decrypt(token), PROCESS_ENV.JWT_SECRET, (err, decoded) => {
+    // jwt.verify(auth.decrypt(token), PROCESS_ENV.JWT_SECRET, (err, decoded) => {
+    // TOTO 改為加密
+    jwt.verify(token, PROCESS_ENV.JWT_SECRET, (err, decoded) => {
       if (err) {
         reject(utils.buildErrObject(409, 'BAD_TOKEN'))
       }
@@ -495,7 +530,7 @@ exports.register = async (req, res) => {
 exports.verify = async (req, res) => {
   try {
     req = matchedData(req)
-    const user = await verificationExists(req.id)
+    const user = await verificationExists(req._id)
     res.status(200).json(await verifyUser(user))
   } catch (error) {
     utils.handleError(res, error)
@@ -529,11 +564,26 @@ exports.forgotPassword = async (req, res) => {
 exports.resetPassword = async (req, res) => {
   try {
     const data = matchedData(req)
-    const forgotPassword = await findForgotPassword(data.id)
+    const forgotPassword = await findForgotPassword(data._id)
     const user = await findUserToResetPassword(forgotPassword.email)
     await updatePassword(data.password, user)
     const result = await markResetPasswordAsUsed(req, forgotPassword)
     res.status(200).json(result)
+  } catch (error) {
+    utils.handleError(res, error)
+  }
+}
+
+/**
+ * Patch role function called by route
+ * @param {Object} req - request object
+ * @param {Object} res - response object
+ */
+exports.patchRole = async (req, res) => {
+  try {
+    const data = matchedData(req)
+    await updateRole(data._id, data.role)
+    res.status(200).json({ _id: data._id, role: data.role })
   } catch (error) {
     utils.handleError(res, error)
   }
@@ -546,15 +596,15 @@ exports.resetPassword = async (req, res) => {
  */
 exports.getRefreshToken = async (req, res) => {
   try {
-    const tokenEncrypted = req.headers.authorization
-      .replace('Bearer ', '')
-      .trim()
+    const data = matchedData(req)
+    const tokenEncrypted = data.token
     let userId = await getUserIdFromToken(tokenEncrypted)
     userId = await utils.isIDGood(userId)
     const user = await findUserById(userId)
     const token = await saveUserAccessAndReturnToken(req, user)
     // Removes user info from response
-    delete token.user
+    // TODO
+    // delete token.user
     res.status(200).json(token)
   } catch (error) {
     utils.handleError(res, error)
@@ -568,7 +618,7 @@ exports.getRefreshToken = async (req, res) => {
 exports.roleAuthorization = (roles) => async (req, res, next) => {
   try {
     const data = {
-      id: req.user._id,
+      _id: req.user._id,
       roles
     }
     await checkPermissions(data, next)

@@ -6,12 +6,13 @@ const { check } = require('express-validator')
  * Validates create new item request
  */
 exports.createItem = [
-  check('name')
+  check('memberId')
     .exists()
     .withMessage('MISSING')
     .not()
     .isEmpty()
-    .withMessage('IS_EMPTY'),
+    .withMessage('IS_EMPTY')
+    .trim(),
   check('email')
     .exists()
     .withMessage('MISSING')
@@ -27,16 +28,16 @@ exports.createItem = [
     .isEmpty()
     .withMessage('IS_EMPTY')
     .isLength({
-      min: 5
+      min: 8
     })
-    .withMessage('PASSWORD_TOO_SHORT_MIN_5'),
+    .withMessage('PASSWORD_TOO_SHORT_MIN_8'),
   check('role')
     .exists()
     .withMessage('MISSING')
     .not()
     .isEmpty()
     .withMessage('IS_EMPTY')
-    .isIn(['user', 'admin'])
+    .isIn(['trial', 'user', 'staff', 'admin'])
     .withMessage('USER_NOT_IN_KNOWN_ROLE'),
   check('phone')
     .exists()
@@ -44,29 +45,11 @@ exports.createItem = [
     .not()
     .isEmpty()
     .withMessage('IS_EMPTY')
+    .custom((phone) =>
+      validator.isMobilePhone(phone, ['zh-TW'], { strictMode: true })
+    )
+    .withMessage('WRONG_MOBILE_PHONE')
     .trim(),
-  check('city')
-    .exists()
-    .withMessage('MISSING')
-    .not()
-    .isEmpty()
-    .withMessage('IS_EMPTY')
-    .trim(),
-  check('country')
-    .exists()
-    .withMessage('MISSING')
-    .not()
-    .isEmpty()
-    .withMessage('IS_EMPTY')
-    .trim(),
-  check('urlTwitter')
-    .optional()
-    .custom((v) => (v === '' ? true : validator.isURL(v)))
-    .withMessage('NOT_A_VALID_URL'),
-  check('urlGitHub')
-    .optional()
-    .custom((v) => (v === '' ? true : validator.isURL(v)))
-    .withMessage('NOT_A_VALID_URL'),
   (req, res, next) => {
     validationResult(req, res, next)
   }
@@ -76,59 +59,28 @@ exports.createItem = [
  * Validates update item request
  */
 exports.updateItem = [
-  check('name')
+  check('_id')
     .exists()
     .withMessage('MISSING')
     .not()
     .isEmpty()
     .withMessage('IS_EMPTY'),
-  check('email')
-    .exists()
-    .withMessage('MISSING')
-    .not()
-    .isEmpty()
-    .withMessage('IS_EMPTY'),
-  check('role')
-    .exists()
-    .withMessage('MISSING')
-    .not()
-    .isEmpty()
-    .withMessage('IS_EMPTY'),
+  check('displayName')
+    .optional()
+    .isLength({ min: 3, max: 12 })
+    .withMessage('OUT_OF_RANGE'),
   check('phone')
-    .exists()
-    .withMessage('MISSING')
-    .not()
-    .isEmpty()
-    .withMessage('IS_EMPTY')
-    .trim(),
-  check('city')
-    .exists()
-    .withMessage('MISSING')
-    .not()
-    .isEmpty()
-    .withMessage('IS_EMPTY')
-    .trim(),
-  check('country')
-    .exists()
-    .withMessage('MISSING')
-    .not()
-    .isEmpty()
-    .withMessage('IS_EMPTY')
-    .trim(),
-  check('urlTwitter')
     .optional()
-    .custom((v) => (v === '' ? true : validator.isURL(v)))
-    .withMessage('NOT_A_VALID_URL'),
-  check('urlGitHub')
+    .custom((phone) =>
+      validator.isMobilePhone(phone, ['zh-TW'], { strictMode: true })
+    )
+    .withMessage('WRONG_MOBILE_PHONE')
+    .trim(),
+  check('shortcuts')
     .optional()
-    .custom((v) => (v === '' ? true : validator.isURL(v)))
-    .withMessage('NOT_A_VALID_URL'),
-  check('id')
-    .exists()
-    .withMessage('MISSING')
-    .not()
-    .isEmpty()
-    .withMessage('IS_EMPTY'),
+    .isArray({ min: 1, max: 6 })
+    .withMessage('MUST_HAVE_ONE_SHORTCUT_MAX_TO_SIX')
+    .trim(),
   (req, res, next) => {
     validationResult(req, res, next)
   }
@@ -138,7 +90,7 @@ exports.updateItem = [
  * Validates get item request
  */
 exports.getItem = [
-  check('id')
+  check('_id')
     .exists()
     .withMessage('MISSING')
     .not()
@@ -153,7 +105,7 @@ exports.getItem = [
  * Validates delete item request
  */
 exports.deleteItem = [
-  check('id')
+  check('_id')
     .exists()
     .withMessage('MISSING')
     .not()

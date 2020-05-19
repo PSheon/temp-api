@@ -1,3 +1,5 @@
+const ora = require('ora')
+const chalk = require('chalk')
 const setupMongo = require('../setup/mongo')
 const path = require('path')
 const fs = require('fs')
@@ -25,15 +27,18 @@ const deleteModelFromDB = (model) => {
 }
 
 const clean = async () => {
+  const spinner = new ora('清理資料庫...').start()
+
   try {
     const promiseArray = models.map(
       async (model) => await deleteModelFromDB(model)
     )
     await Promise.all(promiseArray)
-    console.log('資料庫已清除！')
+    spinner.succeed(`${chalk.green('[1/2]')} 資料庫已清除！`)
     process.exit(0)
   } catch (err) {
     console.log(err)
+    spinner.fail(`${chalk.red('[0/2]')} 資料庫清除失敗！`)
     process.exit(0)
   }
 }

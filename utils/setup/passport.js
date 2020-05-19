@@ -18,10 +18,11 @@ const jwtExtractor = (req) => {
   } else if (req.query.token) {
     token = req.query.token.trim()
   }
-  if (token) {
-    // Decrypts token
-    token = auth.decrypt(token)
-  }
+  // TODO 改為加密
+  // if (token) {
+  //   // Decrypts token
+  //   token = auth.decrypt(token)
+  // }
   return token
 }
 

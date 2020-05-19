@@ -1,4 +1,6 @@
 const PROCESS_ENV = require('config')
+const ora = require('ora')
+const chalk = require('chalk')
 const { Seeder } = require('mongo-seeding')
 const path = require('path')
 const config = {
@@ -12,12 +14,15 @@ const collections = seeder.readCollectionsFromPath(
 )
 
 const main = async () => {
+  const spinner = new ora('清理資料庫...').start()
+
   try {
     await seeder.import(collections)
-    console.log('資料庫已更新!')
+    spinner.succeed(`${chalk.green('[2/2]')} 資料庫已更新`)
     process.exit(0)
   } catch (err) {
     console.log(err)
+    spinner.fail(`${chalk.red('[1/2]')} 資料庫清除失敗！`)
     process.exit(0)
   }
 }

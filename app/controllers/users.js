@@ -16,13 +16,11 @@ const emailer = require('../middleware/emailer')
 const createItem = async (req) => {
   return new Promise((resolve, reject) => {
     const user = new model({
-      name: req.name,
+      memberId: req.memberId,
       email: req.email,
       password: req.password,
       role: req.role,
       phone: req.phone,
-      city: req.city,
-      country: req.country,
       verification: uuid.v4()
     })
     user.save((err, item) => {
@@ -37,6 +35,10 @@ const createItem = async (req) => {
         blockExpires,
         // eslint-disable-next-line no-unused-vars
         loginAttempts,
+        // eslint-disable-next-line no-unused-vars
+        createdAt,
+        // eslint-disable-next-line no-unused-vars
+        updatedAt,
         ...rest
       }) => rest
       resolve(removeProperties(item.toObject()))
@@ -70,8 +72,8 @@ exports.getItems = async (req, res) => {
 exports.getItem = async (req, res) => {
   try {
     req = matchedData(req)
-    const id = await utils.isIDGood(req.id)
-    res.status(200).json(await db.getItem(id, model))
+    const _id = await utils.isIDGood(req._id)
+    res.status(200).json(await db.getItem(_id, model))
   } catch (error) {
     utils.handleError(res, error)
   }
@@ -85,13 +87,13 @@ exports.getItem = async (req, res) => {
 exports.updateItem = async (req, res) => {
   try {
     req = matchedData(req)
-    const id = await utils.isIDGood(req.id)
+    const _id = await utils.isIDGood(req._id)
     const doesEmailExists = await emailer.emailExistsExcludingMyself(
-      id,
+      _id,
       req.email
     )
     if (!doesEmailExists) {
-      res.status(200).json(await db.updateItem(id, model, req))
+      res.status(200).json(await db.updateItem(_id, model, req))
     }
   } catch (error) {
     utils.handleError(res, error)
@@ -127,8 +129,8 @@ exports.createItem = async (req, res) => {
 exports.deleteItem = async (req, res) => {
   try {
     req = matchedData(req)
-    const id = await utils.isIDGood(req.id)
-    res.status(200).json(await db.deleteItem(id, model))
+    const _id = await utils.isIDGood(req._id)
+    res.status(200).json(await db.deleteItem(_id, model))
   } catch (error) {
     utils.handleError(res, error)
   }

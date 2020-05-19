@@ -15,6 +15,11 @@ const trimRequest = require('trim-request')
  */
 
 /*
+ * Login route
+ */
+router.post('/login', trimRequest.all, validate.login, controller.login)
+
+/*
  * Register route
  */
 router.post(
@@ -50,19 +55,27 @@ router.post(
 )
 
 /*
- * Get new refresh token
+ * Reset password route
  */
-router.get(
-  '/token',
+router.patch(
+  '/role',
   requireAuth,
-  AuthController.roleAuthorization(['user', 'admin']),
+  AuthController.roleAuthorization(['staff', 'admin']),
   trimRequest.all,
-  controller.getRefreshToken
+  validate.patchRole,
+  controller.patchRole
 )
 
 /*
- * Login route
+ * Get new refresh token
  */
-router.post('/login', trimRequest.all, validate.login, controller.login)
+router.post(
+  '/access-token',
+  requireAuth,
+  AuthController.roleAuthorization(['trial', 'user', 'staff', 'admin']),
+  trimRequest.all,
+  validate.getRefreshToken,
+  controller.getRefreshToken
+)
 
 module.exports = router

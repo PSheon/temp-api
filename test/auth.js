@@ -9,7 +9,7 @@ const server = require('../server')
 const should = chai.should()
 const loginDetails = {
   email: 'admin@admin.com',
-  password: '12345'
+  password: '12345678'
 }
 let token = ''
 const createdID = []
@@ -64,9 +64,9 @@ describe('*********** AUTH ***********', () => {
   describe('/POST register', () => {
     it('it should POST register', (done) => {
       const user = {
-        name: faker.random.words(),
+        memberId: faker.random.alphaNumeric(),
         email,
-        password: faker.random.words()
+        password: faker.internet.password()
       }
       chai
         .request(server)
@@ -83,9 +83,9 @@ describe('*********** AUTH ***********', () => {
     })
     it('it should NOT POST a register if email already exists', (done) => {
       const user = {
-        name: faker.random.words(),
+        memberId: faker.random.alphaNumeric(),
         email,
-        password: faker.random.words()
+        password: faker.internet.password()
       }
       chai
         .request(server)
@@ -106,7 +106,7 @@ describe('*********** AUTH ***********', () => {
         .request(server)
         .post('/auth/verify')
         .send({
-          id: verification
+          _id: verification
         })
         .end((err, res) => {
           res.should.have.status(200)
@@ -142,8 +142,8 @@ describe('*********** AUTH ***********', () => {
         .request(server)
         .post('/auth/reset')
         .send({
-          id: verificationForgot,
-          password: '12345'
+          _id: verificationForgot,
+          password: '12345678'
         })
         .end((err, res) => {
           res.should.have.status(200)
@@ -154,11 +154,11 @@ describe('*********** AUTH ***********', () => {
     })
   })
 
-  describe('/GET token', () => {
+  describe('/GET access token', () => {
     it('it should NOT be able to consume the route since no token was sent', (done) => {
       chai
         .request(server)
-        .get('/auth/token')
+        .get('/auth/access-token')
         .end((err, res) => {
           res.should.have.status(401)
           done()
@@ -167,7 +167,7 @@ describe('*********** AUTH ***********', () => {
     it('it should GET a fresh token', (done) => {
       chai
         .request(server)
-        .get('/auth/token')
+        .get('/auth/access-token')
         .set('Authorization', `Bearer ${token}`)
         .end((err, res) => {
           res.should.have.status(200)

@@ -20,7 +20,7 @@ const trimRequest = require('trim-request')
 router.get(
   '/',
   requireAuth,
-  AuthController.roleAuthorization(['user', 'admin']),
+  AuthController.roleAuthorization(['trial', 'user', 'staff', 'admin']),
   trimRequest.all,
   controller.getProfile
 )
@@ -31,7 +31,7 @@ router.get(
 router.patch(
   '/',
   requireAuth,
-  AuthController.roleAuthorization(['user', 'admin']),
+  AuthController.roleAuthorization(['trial', 'user', 'staff', 'admin']),
   trimRequest.all,
   validate.updateProfile,
   controller.updateProfile
@@ -43,10 +43,21 @@ router.patch(
 router.post(
   '/changePassword',
   requireAuth,
-  AuthController.roleAuthorization(['user', 'admin']),
+  AuthController.roleAuthorization(['trial', 'user', 'staff', 'admin']),
   trimRequest.all,
   validate.changePassword,
   controller.changePassword
+)
+
+/*
+ * User's access history routes
+ */
+router.post(
+  '/access-history',
+  requireAuth,
+  AuthController.roleAuthorization(['trial', 'user', 'staff', 'admin']),
+  trimRequest.all,
+  controller.getAccesses
 )
 
 module.exports = router

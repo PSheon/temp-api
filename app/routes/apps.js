@@ -20,7 +20,7 @@ const trimRequest = require('trim-request')
 router.get(
   '/',
   requireAuth,
-  AuthController.roleAuthorization(['admin']),
+  AuthController.roleAuthorization(['staff', 'admin']),
   trimRequest.all,
   controller.getAllItems
 )
@@ -43,7 +43,7 @@ router.get(
 router.get(
   '/:appId',
   requireAuth,
-  AuthController.roleAuthorization(['admin']),
+  AuthController.roleAuthorization(['staff', 'admin']),
   trimRequest.all,
   validate.getItem,
   controller.getItem
@@ -55,7 +55,7 @@ router.get(
 router.get(
   '/:appId/:instanceId/logs',
   requireAuth,
-  AuthController.roleAuthorization(['admin']),
+  AuthController.roleAuthorization(['staff', 'admin']),
   trimRequest.all,
   validate.getItemLogs,
   controller.getItemLogs
@@ -68,7 +68,7 @@ router.get(
 router.patch(
   '/:appId',
   requireAuth,
-  AuthController.roleAuthorization(['admin']),
+  AuthController.roleAuthorization(['staff', 'admin']),
   trimRequest.all,
   validate.updateItem,
   controller.updateItem

@@ -11,17 +11,29 @@ const loginDetails = {
   admin: {
     id: '5aa1c2c35ef7a4e97b5e995a',
     email: 'admin@admin.com',
-    password: '12345'
+    password: '12345678'
+  },
+  staff: {
+    id: '5aa1c2c35ef7a4e97b5e995b',
+    email: 'staff@staff.com',
+    password: '12345678'
   },
   user: {
-    id: '5aa1c2c35ef7a4e97b5e995b',
+    id: '5aa1c2c35ef7a4e97b5e995c',
     email: 'user@user.com',
-    password: '12345'
+    password: '12345678'
+  },
+  trial: {
+    id: '5aa1c2c35ef7a4e97b5e995d',
+    email: 'trial@trial.com',
+    password: '12345678'
   }
 }
 const tokens = {
   admin: '',
-  user: ''
+  staff: '',
+  user: '',
+  trial: ''
 }
 
 const email = faker.internet.email()
@@ -44,6 +56,19 @@ describe('*********** USERS ***********', () => {
           done()
         })
     })
+    it('it should GET token as staff', (done) => {
+      chai
+        .request(server)
+        .post('/auth/login')
+        .send(loginDetails.staff)
+        .end((err, res) => {
+          res.should.have.status(200)
+          res.body.should.be.an('object')
+          res.body.should.have.property('token')
+          tokens.staff = res.body.token
+          done()
+        })
+    })
     it('it should GET token as user', (done) => {
       chai
         .request(server)
@@ -54,6 +79,19 @@ describe('*********** USERS ***********', () => {
           res.body.should.be.an('object')
           res.body.should.have.property('token')
           tokens.user = res.body.token
+          done()
+        })
+    })
+    it('it should GET token as trial', (done) => {
+      chai
+        .request(server)
+        .post('/auth/login')
+        .send(loginDetails.trial)
+        .end((err, res) => {
+          res.should.have.status(200)
+          res.body.should.be.an('object')
+          res.body.should.have.property('token')
+          tokens.trial = res.body.token
           done()
         })
     })
@@ -68,7 +106,7 @@ describe('*********** USERS ***********', () => {
           done()
         })
     })
-    it('it should GET all the users', (done) => {
+    it('it should GET all the users with admin', (done) => {
       chai
         .request(server)
         .get('/api/users')
@@ -80,10 +118,22 @@ describe('*********** USERS ***********', () => {
           done()
         })
     })
+    it('it should GET all the users with staff', (done) => {
+      chai
+        .request(server)
+        .get('/api/users')
+        .set('Authorization', `Bearer ${tokens.staff}`)
+        .end((err, res) => {
+          res.should.have.status(200)
+          res.body.should.be.an('object')
+          res.body.docs.should.be.a('array')
+          done()
+        })
+    })
     it('it should GET the users with filters', (done) => {
       chai
         .request(server)
-        .get('/api/users?filter=admin&fields=name,email,city,country,phone')
+        .get('/api/users?filter=admin&fields=email,displayName,phone')
         .set('Authorization', `Bearer ${tokens.admin}`)
         .end((err, res) => {
           res.should.have.status(200)
@@ -112,15 +162,12 @@ describe('*********** USERS ***********', () => {
     })
     it('it should POST a user ', (done) => {
       const user = {
-        name: faker.random.words(),
+        memberId: faker.internet.password(),
         email,
-        password: faker.random.words(),
+        password: faker.internet.password(),
+        displayName: faker.random.words(),
         role: 'admin',
-        urlTwitter: faker.internet.url(),
-        urlGitHub: faker.internet.url(),
-        phone: faker.phone.phoneNumber(),
-        city: faker.random.words(),
-        country: faker.random.words()
+        phone: faker.phone.phoneNumber('+8869########')
       }
       chai
         .request(server)
@@ -130,16 +177,32 @@ describe('*********** USERS ***********', () => {
         .end((err, res) => {
           res.should.have.status(201)
           res.body.should.be.a('object')
-          res.body.should.include.keys('_id', 'name', 'email', 'verification')
+          res.body.should.include.keys(
+            '_id',
+            'memberId',
+            'email',
+            'google',
+            'role',
+            'photoURL',
+            'phone',
+            'shortcuts',
+            'referralParent',
+            'referralChildList',
+            'lastPasswordUpdatedAt',
+            'verified',
+            'verification',
+            'active'
+          )
           createdID.push(res.body._id)
           done()
         })
     })
     it('it should NOT POST a user with email that already exists', (done) => {
       const user = {
-        name: faker.random.words(),
+        memberId: faker.internet.password(),
         email,
-        password: faker.random.words(),
+        password: faker.internet.password(),
+        displayName: faker.random.words(),
         role: 'admin'
       }
       chai
@@ -156,9 +219,10 @@ describe('*********** USERS ***********', () => {
     })
     it('it should NOT POST a user with not known role', (done) => {
       const user = {
-        name: faker.random.words(),
+        memberId: faker.internet.password(),
         email,
-        password: faker.random.words(),
+        password: faker.internet.password(),
+        displayName: faker.random.words(),
         role: faker.random.words()
       }
       chai
@@ -174,73 +238,62 @@ describe('*********** USERS ***********', () => {
         })
     })
   })
-  describe('/GET/:id user', () => {
-    it('it should GET a user by the given id', (done) => {
-      const id = createdID.slice(-1).pop()
+  describe('/GET/:_id user', () => {
+    it('it should GET a user by the given _id with admin', (done) => {
+      const _id = createdID.slice(-1).pop()
       chai
         .request(server)
-        .get(`/api/users/${id}`)
+        .get(`/api/users/${_id}`)
         .set('Authorization', `Bearer ${tokens.admin}`)
         .end((error, res) => {
           res.should.have.status(200)
           res.body.should.be.a('object')
-          res.body.should.have.property('name')
-          res.body.should.have.property('_id').eql(id)
+          res.body.should.have.property('memberId')
+          res.body.should.have.property('_id').eql(_id)
+          done()
+        })
+    })
+    it('it should GET a user by the given _id with staff', (done) => {
+      const _id = createdID.slice(-1).pop()
+      chai
+        .request(server)
+        .get(`/api/users/${_id}`)
+        .set('Authorization', `Bearer ${tokens.staff}`)
+        .end((error, res) => {
+          res.should.have.status(200)
+          res.body.should.be.a('object')
+          res.body.should.have.property('memberId')
+          res.body.should.have.property('_id').eql(_id)
           done()
         })
     })
   })
-  describe('/PATCH/:id user', () => {
-    it('it should UPDATE a user given the id', (done) => {
-      const id = createdID.slice(-1).pop()
+  describe('/PATCH/:_id user', () => {
+    it('it should UPDATE a user given the _id', (done) => {
+      const _id = createdID.slice(-1).pop()
       const user = {
-        name: 'JS123456',
-        email: 'emailthatalreadyexists@email.com',
-        role: 'admin',
-        urlTwitter: faker.internet.url(),
-        urlGitHub: faker.internet.url(),
-        phone: faker.phone.phoneNumber(),
-        city: faker.random.words(),
-        country: faker.random.words()
+        displayName: 'JS123456',
+        phone: faker.phone.phoneNumber('+8869########'),
+        shortcuts: ['bot-setting']
       }
       chai
         .request(server)
-        .patch(`/api/users/${id}`)
+        .patch(`/api/users/${_id}`)
         .set('Authorization', `Bearer ${tokens.admin}`)
         .send(user)
         .end((error, res) => {
           res.should.have.status(200)
           res.body.should.be.a('object')
-          res.body.should.have.property('_id').eql(id)
-          res.body.should.have.property('name').eql('JS123456')
-          res.body.should.have
-            .property('email')
-            .eql('emailthatalreadyexists@email.com')
+          res.body.should.have.property('_id').eql(_id)
+          res.body.should.have.property('displayName').eql(user.displayName)
+          res.body.should.have.property('phone').eql(user.phone)
+          res.body.should.have.property('shortcuts').eql(user.shortcuts)
           createdID.push(res.body._id)
           done()
         })
     })
-    it('it should NOT UPDATE a user with email that already exists', (done) => {
-      const id = createdID.slice(-1).pop()
-      const user = {
-        name: faker.random.words(),
-        email: 'admin@admin.com',
-        role: 'admin'
-      }
-      chai
-        .request(server)
-        .patch(`/api/users/${id}`)
-        .set('Authorization', `Bearer ${tokens.admin}`)
-        .send(user)
-        .end((err, res) => {
-          res.should.have.status(422)
-          res.body.should.be.a('object')
-          res.body.should.have.property('errors')
-          done()
-        })
-    })
-    it('it should NOT UPDATE another user if not an admin', (done) => {
-      const id = createdID.slice(-1).pop()
+    it('it should NOT UPDATE another user if be an user', (done) => {
+      const _id = createdID.slice(-1).pop()
       const user = {
         name: faker.random.words(),
         email: 'toto@toto.com',
@@ -248,7 +301,7 @@ describe('*********** USERS ***********', () => {
       }
       chai
         .request(server)
-        .patch(`/api/users/${id}`)
+        .patch(`/api/users/${_id}`)
         .set('Authorization', `Bearer ${tokens.user}`)
         .send(user)
         .end((err, res) => {
@@ -258,19 +311,35 @@ describe('*********** USERS ***********', () => {
           done()
         })
     })
-  })
-  describe('/DELETE/:id user', () => {
-    it('it should DELETE a user given the id', (done) => {
+    it('it should NOT UPDATE another user if be an trial', (done) => {
+      const _id = createdID.slice(-1).pop()
       const user = {
         name: faker.random.words(),
+        email: 'toto@toto.com',
+        role: 'user'
+      }
+      chai
+        .request(server)
+        .patch(`/api/users/${_id}`)
+        .set('Authorization', `Bearer ${tokens.trial}`)
+        .send(user)
+        .end((err, res) => {
+          res.should.have.status(401)
+          res.body.should.be.a('object')
+          res.body.should.have.property('errors')
+          done()
+        })
+    })
+  })
+  describe('/DELETE/:_id user', () => {
+    it('it should DELETE a user given the _id', (done) => {
+      const user = {
+        memberId: faker.internet.password(),
         email: faker.internet.email(),
-        password: faker.random.words(),
+        password: faker.internet.password(),
+        displayName: faker.random.words(),
         role: 'admin',
-        urlTwitter: faker.internet.url(),
-        urlGitHub: faker.internet.url(),
-        phone: faker.phone.phoneNumber(),
-        city: faker.random.words(),
-        country: faker.random.words()
+        phone: faker.phone.phoneNumber('+8869########')
       }
       chai
         .request(server)
@@ -280,7 +349,22 @@ describe('*********** USERS ***********', () => {
         .end((err, res) => {
           res.should.have.status(201)
           res.body.should.be.a('object')
-          res.body.should.include.keys('_id', 'name', 'email', 'verification')
+          res.body.should.include.keys(
+            '_id',
+            'memberId',
+            'email',
+            'google',
+            'role',
+            'photoURL',
+            'phone',
+            'shortcuts',
+            'referralParent',
+            'referralChildList',
+            'lastPasswordUpdatedAt',
+            'verified',
+            'verification',
+            'active'
+          )
           chai
             .request(server)
             .delete(`/api/users/${res.body._id}`)

@@ -3,10 +3,41 @@ const bcrypt = require('bcrypt')
 const validator = require('validator')
 const mongoosePaginate = require('mongoose-paginate-v2')
 
+const mobilePhoneValidator = (phone) =>
+  validator.isMobilePhone(phone, ['zh-TW'], { strictMode: true })
+
+const GoogleProvider = new mongoose.Schema({
+  id: {
+    type: String,
+    default: undefined
+  },
+  accessToken: {
+    type: String,
+    default: undefined
+  },
+  displayName: {
+    type: String,
+    default: undefined
+  },
+  email: {
+    type: String,
+    default: undefined
+  },
+  photoURL: {
+    type: String,
+    default: undefined
+  }
+})
+
 const UserSchema = new mongoose.Schema(
   {
-    name: {
+    memberId: {
       type: String,
+      validate: {
+        validator: validator.isAlphanumeric,
+        message: 'MEMBER_ID_ONLY_ACCEPT_ALPHA_NUMERIC'
+      },
+      unique: true,
       required: true
     },
     email: {
@@ -26,44 +57,62 @@ const UserSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['user', 'admin'],
-      default: 'user'
+      enum: ['trial', 'user', 'staff', 'admin'],
+      default: 'trial'
+    },
+
+    /* Third Party Login */
+    google: {
+      type: GoogleProvider,
+      default: null
+    },
+
+    /* Profile */
+    displayName: {
+      type: String,
+      required: false
+    },
+    photoURL: {
+      type: String,
+      default: 'assets/images/avatars/default.png',
+      required: false
+    },
+    phone: {
+      type: String,
+      validate: {
+        validator: mobilePhoneValidator,
+        message: 'EMAIL_IS_NOT_VALID'
+      },
+      required: false
+    },
+    shortcuts: {
+      type: [String],
+      default: ['bot-setting', 'market', 'leader-board', 'referrals']
+    },
+
+    /* Referrals */
+    referralParent: {
+      type: String,
+      default: ''
+    },
+    referralChildList: {
+      type: [String],
+      default: []
+    },
+
+    /* Security */
+    lastPasswordUpdatedAt: {
+      type: Date,
+      select: false,
+      default: Date.now
     },
     verification: {
-      type: String
+      type: String,
+      select: false
     },
     verified: {
       type: Boolean,
       default: false
-    },
-    phone: {
-      type: String
-    },
-    city: {
-      type: String
-    },
-    country: {
-      type: String
-    },
-    urlTwitter: {
-      type: String,
-      validate: {
-        validator(v) {
-          return v === '' ? true : validator.isURL(v)
-        },
-        message: 'NOT_A_VALID_URL'
-      },
-      lowercase: true
-    },
-    urlGitHub: {
-      type: String,
-      validate: {
-        validator(v) {
-          return v === '' ? true : validator.isURL(v)
-        },
-        message: 'NOT_A_VALID_URL'
-      },
-      lowercase: true
     },
     loginAttempts: {
       type: Number,
@@ -74,6 +123,12 @@ const UserSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
       select: false
+    },
+
+    /* Account Status */
+    active: {
+      type: Boolean,
+      default: true
     }
   },
   {

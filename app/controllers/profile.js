@@ -1,4 +1,5 @@
-const model = require('../models/user')
+const userModel = require('../models/user')
+const accessModel = require('../models/userAccess')
 const utils = require('../middleware/utils')
 const { matchedData } = require('express-validator')
 const auth = require('../middleware/auth')
@@ -13,7 +14,7 @@ const auth = require('../middleware/auth')
  */
 const getProfileFromDB = async (id) => {
   return new Promise((resolve, reject) => {
-    model.findById(id, '-_id -updatedAt -createdAt', (err, user) => {
+    userModel.findById(id, '-_id -updatedAt -createdAt', (err, user) => {
       utils.itemNotFound(err, user, reject, 'NOT_FOUND')
       resolve(user)
     })
@@ -25,15 +26,15 @@ const getProfileFromDB = async (id) => {
  * @param {Object} req - request object
  * @param {string} id - user id
  */
-const updateProfileInDB = async (req, id) => {
+const updateProfileInDB = async (req, _id) => {
   return new Promise((resolve, reject) => {
-    model.findByIdAndUpdate(
-      id,
+    userModel.findByIdAndUpdate(
+      _id,
       req,
       {
         new: true,
         runValidators: true,
-        select: '-role -_id -updatedAt -createdAt'
+        select: '-updatedAt -createdAt'
       },
       (err, user) => {
         utils.itemNotFound(err, user, reject, 'NOT_FOUND')
@@ -49,7 +50,7 @@ const updateProfileInDB = async (req, id) => {
  */
 const findUser = async (id) => {
   return new Promise((resolve, reject) => {
-    model.findById(id, 'password email', (err, user) => {
+    userModel.findById(id, 'password email', (err, user) => {
       utils.itemNotFound(err, user, reject, 'USER_DOES_NOT_EXIST')
       resolve(user)
     })
@@ -73,7 +74,7 @@ const passwordsDoNotMatch = async () => {
  */
 const changePasswordInDB = async (id, req) => {
   return new Promise((resolve, reject) => {
-    model.findById(id, '+password', (err, user) => {
+    userModel.findById(id, '+password', (err, user) => {
       utils.itemNotFound(err, user, reject, 'NOT_FOUND')
 
       // Assigns new password to user
@@ -90,6 +91,28 @@ const changePasswordInDB = async (id, req) => {
   })
 }
 
+/**
+ * Gets last 15 accesses log from database
+ */
+const findUserAccesses = async (email) => {
+  return new Promise((resolve, reject) => {
+    accessModel.find(
+      { email },
+      '-email -updatedAt',
+      {
+        sort: {
+          updatedAt: -1
+        },
+        limit: 15
+      },
+      (err, accessHistory) => {
+        utils.itemNotFound(err, accessHistory, reject, 'NOT_FOUND')
+        resolve(accessHistory)
+      }
+    )
+  })
+}
+
 /********************
  * Public functions *
  ********************/
@@ -101,8 +124,8 @@ const changePasswordInDB = async (id, req) => {
  */
 exports.getProfile = async (req, res) => {
   try {
-    const id = await utils.isIDGood(req.user._id)
-    res.status(200).json(await getProfileFromDB(id))
+    const _id = await utils.isIDGood(req.user._id)
+    res.status(200).json(await getProfileFromDB(_id))
   } catch (error) {
     utils.handleError(res, error)
   }
@@ -115,9 +138,9 @@ exports.getProfile = async (req, res) => {
  */
 exports.updateProfile = async (req, res) => {
   try {
-    const id = await utils.isIDGood(req.user._id)
+    const _id = await utils.isIDGood(req.user._id)
     req = matchedData(req)
-    res.status(200).json(await updateProfileInDB(req, id))
+    res.status(200).json(await updateProfileInDB(req, _id))
   } catch (error) {
     utils.handleError(res, error)
   }
@@ -130,16 +153,31 @@ exports.updateProfile = async (req, res) => {
  */
 exports.changePassword = async (req, res) => {
   try {
-    const id = await utils.isIDGood(req.user._id)
-    const user = await findUser(id)
+    const _id = await utils.isIDGood(req.user._id)
+    const user = await findUser(_id)
     req = matchedData(req)
     const isPasswordMatch = await auth.checkPassword(req.oldPassword, user)
     if (!isPasswordMatch) {
       utils.handleError(res, await passwordsDoNotMatch())
     } else {
       // all ok, proceed to change password
-      res.status(200).json(await changePasswordInDB(id, req))
+      res.status(200).json(await changePasswordInDB(_id, req))
     }
+  } catch (error) {
+    utils.handleError(res, error)
+  }
+}
+
+/**
+ * Get last 15 access history by user _id
+ * @param {Object} req - request object
+ * @param {Object} res - response object
+ */
+exports.getAccesses = async (req, res) => {
+  try {
+    await utils.isIDGood(req.user._id)
+    const email = req.user.email
+    res.status(200).json(await findUserAccesses(email))
   } catch (error) {
     utils.handleError(res, error)
   }
