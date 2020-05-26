@@ -127,7 +127,7 @@ describe('*********** PROFILE ***********', () => {
     //     })
     // })
   })
-  describe('/POST profile/changePassword', () => {
+  describe('/POST profile/change-password', () => {
     it('it should NOT change password with wrong password', (done) => {
       const data = {
         oldPassword: '12345677',
@@ -135,16 +135,14 @@ describe('*********** PROFILE ***********', () => {
       }
       chai
         .request(server)
-        .post('/api/profile/changePassword')
+        .post('/api/profile/change-password')
         .set('Authorization', `Bearer ${token}`)
         .send(data)
         .end((err, res) => {
           res.should.have.status(409)
           res.body.should.be.a('object')
-          res.body.should.have
-            .property('errors')
-            .that.has.property('msg')
-            .eql('WRONG_PASSWORD')
+          res.body.should.have.property('errors')
+          res.body.errors[0].should.have.property('msg').eql('WRONG_PASSWORD')
           done()
         })
     })
@@ -155,14 +153,14 @@ describe('*********** PROFILE ***********', () => {
       }
       chai
         .request(server)
-        .post('/api/profile/changePassword')
+        .post('/api/profile/change-password')
         .set('Authorization', `Bearer ${token}`)
         .send(data)
         .end((err, res) => {
           res.should.have.status(422)
           res.body.should.be.a('object')
-          res.body.should.have.property('errors').that.has.property('msg')
-          res.body.errors.msg[0].should.have
+          res.body.should.have.property('errors')
+          res.body.errors[0].should.have
             .property('msg')
             .eql('PASSWORD_TOO_SHORT_MIN_8')
           done()
@@ -175,7 +173,7 @@ describe('*********** PROFILE ***********', () => {
       }
       chai
         .request(server)
-        .post('/api/profile/changePassword')
+        .post('/api/profile/change-password')
         .set('Authorization', `Bearer ${token}`)
         .send(data)
         .end((err, res) => {

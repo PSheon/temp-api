@@ -134,13 +134,13 @@ module.exports = {
   /**
    * Updates an item in database by id
    * @param {string} id - item id
-   * @param {Object} req - request object
+   * @param {Object} data - request update object
    */
-  async updateItem(id, model, req) {
+  async updateItem(id, model, data) {
     return new Promise((resolve, reject) => {
       model.findByIdAndUpdate(
         id,
-        req,
+        data,
         {
           new: true,
           runValidators: true

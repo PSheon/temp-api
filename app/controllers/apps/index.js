@@ -1,5 +1,5 @@
 const { matchedData } = require('express-validator')
-const utils = require('../middleware/utils')
+const utils = require('../../middleware/utils')
 const {
   getList,
   getApp,
@@ -8,8 +8,8 @@ const {
   deleteApp,
   reloadApp,
   restartApp
-} = require('../../plugins/app-manager')
-const { AppAction } = require('../../types/app-manager')
+} = require('../../../plugins/app-manager')
+const { AppAction } = require('../../../types/app-manager')
 
 /*********************
  * Private functions *
@@ -60,9 +60,9 @@ exports.getAllItems = async (req, res) => {
  */
 exports.getItem = async (req, res) => {
   try {
-    req = matchedData(req)
+    const data = matchedData(req)
 
-    const appId = req.appId
+    const appId = data.appId
     res.status(200).json(await getApp(appId))
   } catch (error) {
     utils.handleError(res, error)
@@ -76,14 +76,14 @@ exports.getItem = async (req, res) => {
  */
 exports.getItemLogs = async (req, res) => {
   try {
-    req = matchedData(req)
+    const data = matchedData(req)
 
-    const { appId, instanceId } = req
+    const { appId, instanceId } = data
     const { app, output, error } = await getLogs(instanceId)
 
     if (app.name !== appId) {
       res.status(500).json({
-        message: '應用程序名稱和 PM2 識別器不相同.'
+        message: '應用程序名稱和 PM2 識別號不相同.'
       })
     }
 
@@ -101,8 +101,8 @@ exports.getItemLogs = async (req, res) => {
  */
 exports.updateItem = async (req, res) => {
   try {
-    req = matchedData(req)
-    const { appId, action } = req
+    const data = matchedData(req)
+    const { appId, action } = data
 
     const actions = {
       [AppAction.DELETE]: deleteApp,
@@ -115,7 +115,7 @@ exports.updateItem = async (req, res) => {
     const fn = actions[action]
 
     await fn(appId)
-    res.status(200).json({ status: 'Succeed' })
+    res.status(200).json({ message: 'Succeed' })
   } catch (error) {
     utils.handleError(res, error)
   }

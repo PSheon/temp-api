@@ -1,5 +1,5 @@
 const controller = require('../controllers/profile')
-const validate = require('../controllers/profile.validate')
+const validate = require('../controllers/profile/validate')
 const AuthController = require('../controllers/auth')
 const express = require('express')
 const router = express.Router()
@@ -41,7 +41,7 @@ router.patch(
  * Change password route
  */
 router.post(
-  '/changePassword',
+  '/change-password',
   requireAuth,
   AuthController.roleAuthorization(['trial', 'user', 'staff', 'admin']),
   trimRequest.all,

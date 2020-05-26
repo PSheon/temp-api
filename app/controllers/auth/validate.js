@@ -1,4 +1,4 @@
-const { validationResult } = require('../middleware/utils')
+const { validationResult } = require('../../middleware/utils')
 const { check } = require('express-validator')
 
 /**
@@ -67,7 +67,7 @@ exports.login = [
  * Validates verify request
  */
 exports.verify = [
-  check('_id')
+  check('verification')
     .exists()
     .withMessage('MISSING')
     .not()

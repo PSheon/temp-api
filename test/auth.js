@@ -95,6 +95,9 @@ describe('*********** AUTH ***********', () => {
           res.should.have.status(422)
           res.body.should.be.a('object')
           res.body.should.have.property('errors')
+          res.body.errors[0].should.have
+            .property('msg')
+            .eql('EMAIL_ALREADY_EXISTS')
           done()
         })
     })
@@ -106,7 +109,7 @@ describe('*********** AUTH ***********', () => {
         .request(server)
         .post('/auth/verify')
         .send({
-          _id: verification
+          verification
         })
         .end((err, res) => {
           res.should.have.status(200)
@@ -122,7 +125,7 @@ describe('*********** AUTH ***********', () => {
     it('it should POST forgot', (done) => {
       chai
         .request(server)
-        .post('/auth/forgot')
+        .post('/auth/forgot-password')
         .send({
           email
         })
@@ -140,7 +143,7 @@ describe('*********** AUTH ***********', () => {
     it('it should POST reset', (done) => {
       chai
         .request(server)
-        .post('/auth/reset')
+        .post('/auth/reset-password')
         .send({
           _id: verificationForgot,
           password: '12345678'
@@ -154,11 +157,11 @@ describe('*********** AUTH ***********', () => {
     })
   })
 
-  describe('/GET access token', () => {
+  describe('/POST access token', () => {
     it('it should NOT be able to consume the route since no token was sent', (done) => {
       chai
         .request(server)
-        .get('/auth/access-token')
+        .post('/auth/access-token')
         .end((err, res) => {
           res.should.have.status(401)
           done()
@@ -167,8 +170,11 @@ describe('*********** AUTH ***********', () => {
     it('it should GET a fresh token', (done) => {
       chai
         .request(server)
-        .get('/auth/access-token')
+        .post('/auth/access-token')
         .set('Authorization', `Bearer ${token}`)
+        .send({
+          token
+        })
         .end((err, res) => {
           res.should.have.status(200)
           res.body.should.be.an('object')

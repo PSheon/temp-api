@@ -1,5 +1,5 @@
 const controller = require('../controllers/auth')
-const validate = require('../controllers/auth.validate')
+const validate = require('../controllers/auth/validate')
 const AuthController = require('../controllers/auth')
 const express = require('express')
 const router = express.Router()
@@ -38,7 +38,7 @@ router.post('/verify', trimRequest.all, validate.verify, controller.verify)
  * Forgot password route
  */
 router.post(
-  '/forgot',
+  '/forgot-password',
   trimRequest.all,
   validate.forgotPassword,
   controller.forgotPassword
@@ -48,14 +48,14 @@ router.post(
  * Reset password route
  */
 router.post(
-  '/reset',
+  '/reset-password',
   trimRequest.all,
   validate.resetPassword,
   controller.resetPassword
 )
 
 /*
- * Reset password route
+ * Patch role route
  */
 router.patch(
   '/role',

@@ -1,7 +1,7 @@
-const { validationResult } = require('../middleware/utils')
+const { validationResult } = require('../../middleware/utils')
 const { check } = require('express-validator')
 
-const TYPES = require('../../types/app-manager')
+const TYPES = require('../../../types/app-manager')
 
 /**
  * Validates create new item request

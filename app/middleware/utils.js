@@ -30,24 +30,6 @@ exports.getCountry = (req) =>
   req.headers['cf-ipcountry'] ? req.headers['cf-ipcountry'] : 'XX'
 
 /**
- * Gets user req action
- * @param {*} req - request object
- */
-exports.getAction = (req) => {
-  if (req.originalUrl.startsWith('/auth/access-token')) {
-    return 'refresh'
-  }
-  if (req.originalUrl.startsWith('/auth/login')) {
-    return 'login'
-  }
-  if (req.originalUrl.startsWith('/auth/login')) {
-    return 'login'
-  }
-
-  return 'api'
-}
-
-/**
  * Handles error by printing to console in development env and builds and sends an error response
  * @param {Object} res - response object
  * @param {Object} err - error object
@@ -59,7 +41,7 @@ exports.handleError = (res, err) => {
   }
   // Sends error to user
   res.status(err.code || 500).json({
-    msg: err.message || '發生未預期的狀況.'
+    errors: err.message || [{ msg: '發生未預期的狀況.' }]
   })
 }
 
@@ -69,6 +51,12 @@ exports.handleError = (res, err) => {
  * @param {string} message - error text
  */
 exports.buildErrObject = (code, message) => {
+  if (typeof message === 'string') {
+    return {
+      code,
+      message: [{ msg: message }]
+    }
+  }
   return {
     code,
     message

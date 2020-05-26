@@ -24,10 +24,14 @@ const UserAccessSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-    action: {
+    method: {
       type: String,
       required: true,
-      enum: ['login', 'refresh', 'change-password']
+      enum: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
+    },
+    action: {
+      type: String,
+      required: true
     }
   },
   {

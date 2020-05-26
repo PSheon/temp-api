@@ -1,8 +1,8 @@
-const userModel = require('../models/user')
-const accessModel = require('../models/userAccess')
-const utils = require('../middleware/utils')
+const userModel = require('../../models/user')
+const UserAccess = require('../../models/userAccess')
+const utils = require('../../middleware/utils')
 const { matchedData } = require('express-validator')
-const auth = require('../middleware/auth')
+const auth = require('../../middleware/auth')
 
 /*********************
  * Private functions *
@@ -96,8 +96,8 @@ const changePasswordInDB = async (id, req) => {
  */
 const findUserAccesses = async (email) => {
   return new Promise((resolve, reject) => {
-    accessModel.find(
-      { email },
+    UserAccess.find(
+      { email, action: { $ne: '/auth/access-token' } },
       '-email -updatedAt',
       {
         sort: {
@@ -110,6 +110,30 @@ const findUserAccesses = async (email) => {
         resolve(accessHistory)
       }
     )
+  })
+}
+/**
+ * Saves a user access
+ * @param {Object} req - request object
+ * @param {Object} user - user object
+ */
+const saveUserAccess = async (req, user) => {
+  return new Promise((resolve, reject) => {
+    const userAccess = new UserAccess({
+      email: !!user && !!user.email ? user.email : req.user.email,
+      ip: utils.getIP(req),
+      browser: utils.getBrowserInfo(req),
+      country: utils.getCountry(req),
+      method: req.method,
+      action: `${req.baseUrl}${req.path}`
+    })
+    userAccess.save((err) => {
+      if (err) {
+        reject(utils.buildErrObject(422, err.message))
+      }
+
+      resolve()
+    })
   })
 }
 
@@ -125,6 +149,7 @@ const findUserAccesses = async (email) => {
 exports.getProfile = async (req, res) => {
   try {
     const _id = await utils.isIDGood(req.user._id)
+    await saveUserAccess(req)
     res.status(200).json(await getProfileFromDB(_id))
   } catch (error) {
     utils.handleError(res, error)
@@ -139,8 +164,9 @@ exports.getProfile = async (req, res) => {
 exports.updateProfile = async (req, res) => {
   try {
     const _id = await utils.isIDGood(req.user._id)
-    req = matchedData(req)
-    res.status(200).json(await updateProfileInDB(req, _id))
+    const data = matchedData(req)
+    await saveUserAccess(req)
+    res.status(200).json(await updateProfileInDB(data, _id))
   } catch (error) {
     utils.handleError(res, error)
   }
@@ -155,12 +181,13 @@ exports.changePassword = async (req, res) => {
   try {
     const _id = await utils.isIDGood(req.user._id)
     const user = await findUser(_id)
-    req = matchedData(req)
-    const isPasswordMatch = await auth.checkPassword(req.oldPassword, user)
+    const data = matchedData(req)
+    const isPasswordMatch = await auth.checkPassword(data.oldPassword, user)
     if (!isPasswordMatch) {
       utils.handleError(res, await passwordsDoNotMatch())
     } else {
       // all ok, proceed to change password
+      await saveUserAccess(req)
       res.status(200).json(await changePasswordInDB(_id, req))
     }
   } catch (error) {
@@ -177,6 +204,7 @@ exports.getAccesses = async (req, res) => {
   try {
     await utils.isIDGood(req.user._id)
     const email = req.user.email
+    await saveUserAccess(req)
     res.status(200).json(await findUserAccesses(email))
   } catch (error) {
     utils.handleError(res, error)

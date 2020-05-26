@@ -9,23 +9,27 @@ const mobilePhoneValidator = (phone) =>
 const GoogleProvider = new mongoose.Schema({
   id: {
     type: String,
-    default: undefined
+    default: null
   },
   accessToken: {
     type: String,
-    default: undefined
+    default: null
   },
   displayName: {
     type: String,
-    default: undefined
+    default: null
   },
   email: {
     type: String,
-    default: undefined
+    validate: {
+      validator: validator.isEmail,
+      message: 'GOOGLE_EMAIL_IS_NOT_VALID'
+    },
+    default: null
   },
   photoURL: {
     type: String,
-    default: undefined
+    default: null
   }
 })
 
@@ -37,6 +41,7 @@ const UserSchema = new mongoose.Schema(
         validator: validator.isAlphanumeric,
         message: 'MEMBER_ID_ONLY_ACCEPT_ALPHA_NUMERIC'
       },
+      lowercase: true,
       unique: true,
       required: true
     },
@@ -77,6 +82,14 @@ const UserSchema = new mongoose.Schema(
       default: 'assets/images/avatars/default.png',
       required: false
     },
+    secondaryEmail: {
+      type: String,
+      validate: {
+        validator: validator.isEmail,
+        message: 'EMAIL_IS_NOT_VALID'
+      },
+      lowercase: true
+    },
     phone: {
       type: String,
       validate: {
@@ -89,8 +102,33 @@ const UserSchema = new mongoose.Schema(
       type: [String],
       default: ['bot-setting', 'market', 'leader-board', 'referrals']
     },
+    settings: {
+      currency: {
+        type: String,
+        enum: ['TWD', 'USD'],
+        default: 'TWD'
+      },
+      theme: {
+        type: String,
+        enum: ['light', 'dark'],
+        default: 'dark'
+      },
+      notification: {
+        type: Boolean,
+        default: true
+      }
+    },
 
     /* Referrals */
+    level: {
+      type: Number,
+      enum: [1, 2, 3],
+      default: 1
+    },
+    points: {
+      type: Number,
+      default: 0
+    },
     referralParent: {
       type: String,
       default: ''

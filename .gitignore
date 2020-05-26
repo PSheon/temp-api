@@ -72,3 +72,5 @@ config/production.js
 !.gitkeep
 
 .history/
+
+app/controllers/playground.js

@@ -1,9 +1,10 @@
-const model = require('../models/user')
+const model = require('../../models/user')
+const UserAccess = require('../../models/userAccess')
 const uuid = require('uuid')
 const { matchedData } = require('express-validator')
-const utils = require('../middleware/utils')
-const db = require('../middleware/db')
-const emailer = require('../middleware/emailer')
+const utils = require('../../middleware/utils')
+const db = require('../../middleware/db')
+const emailer = require('../../middleware/emailer')
 
 /*********************
  * Private functions *
@@ -45,6 +46,30 @@ const createItem = async (req) => {
     })
   })
 }
+/**
+ * Saves a user access
+ * @param {Object} req - request object
+ * @param {Object} user - user object
+ */
+const saveUserAccess = async (req, user) => {
+  return new Promise((resolve, reject) => {
+    const userAccess = new UserAccess({
+      email: !!user && !!user.email ? user.email : req.user.email,
+      ip: utils.getIP(req),
+      browser: utils.getBrowserInfo(req),
+      country: utils.getCountry(req),
+      method: req.method,
+      action: `${req.baseUrl}${req.path}`
+    })
+    userAccess.save((err) => {
+      if (err) {
+        reject(utils.buildErrObject(422, err.message))
+      }
+
+      resolve()
+    })
+  })
+}
 
 /********************
  * Public functions *
@@ -58,6 +83,7 @@ const createItem = async (req) => {
 exports.getItems = async (req, res) => {
   try {
     const query = await db.checkQueryString(req.query)
+    await saveUserAccess(req)
     res.status(200).json(await db.getItems(req, model, query))
   } catch (error) {
     utils.handleError(res, error)
@@ -71,8 +97,9 @@ exports.getItems = async (req, res) => {
  */
 exports.getItem = async (req, res) => {
   try {
-    req = matchedData(req)
-    const _id = await utils.isIDGood(req._id)
+    const data = matchedData(req)
+    const _id = await utils.isIDGood(data._id)
+    await saveUserAccess(req)
     res.status(200).json(await db.getItem(_id, model))
   } catch (error) {
     utils.handleError(res, error)
@@ -86,13 +113,15 @@ exports.getItem = async (req, res) => {
  */
 exports.updateItem = async (req, res) => {
   try {
-    req = matchedData(req)
-    const _id = await utils.isIDGood(req._id)
+    const data = matchedData(req)
+    console.log('req, ', req)
+    const _id = await utils.isIDGood(data._id)
     const doesEmailExists = await emailer.emailExistsExcludingMyself(
       _id,
-      req.email
+      req.user.email
     )
     if (!doesEmailExists) {
+      await saveUserAccess(req)
       res.status(200).json(await db.updateItem(_id, model, req))
     }
   } catch (error) {
@@ -109,11 +138,12 @@ exports.createItem = async (req, res) => {
   try {
     // Gets locale from header 'Accept-Language'
     const locale = req.getLocale()
-    req = matchedData(req)
-    const doesEmailExists = await emailer.emailExists(req.email)
+    const data = matchedData(req)
+    const doesEmailExists = await emailer.emailExists(data.email)
     if (!doesEmailExists) {
-      const item = await createItem(req)
+      const item = await createItem(data)
       emailer.sendRegistrationEmailMessage(locale, item)
+      await saveUserAccess(req)
       res.status(201).json(item)
     }
   } catch (error) {
@@ -128,8 +158,9 @@ exports.createItem = async (req, res) => {
  */
 exports.deleteItem = async (req, res) => {
   try {
-    req = matchedData(req)
-    const _id = await utils.isIDGood(req._id)
+    const data = matchedData(req)
+    const _id = await utils.isIDGood(data._id)
+    await saveUserAccess(req)
     res.status(200).json(await db.deleteItem(_id, model))
   } catch (error) {
     utils.handleError(res, error)

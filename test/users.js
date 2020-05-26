@@ -162,7 +162,7 @@ describe('*********** USERS ***********', () => {
     })
     it('it should POST a user ', (done) => {
       const user = {
-        memberId: faker.internet.password(),
+        memberId: faker.internet.password().replace(/_/g, ''),
         email,
         password: faker.internet.password(),
         displayName: faker.random.words(),
@@ -199,7 +199,7 @@ describe('*********** USERS ***********', () => {
     })
     it('it should NOT POST a user with email that already exists', (done) => {
       const user = {
-        memberId: faker.internet.password(),
+        memberId: faker.internet.password().replace(/_/g, ''),
         email,
         password: faker.internet.password(),
         displayName: faker.random.words(),
@@ -219,7 +219,7 @@ describe('*********** USERS ***********', () => {
     })
     it('it should NOT POST a user with not known role', (done) => {
       const user = {
-        memberId: faker.internet.password(),
+        memberId: faker.internet.password().replace(/_/g, ''),
         email,
         password: faker.internet.password(),
         displayName: faker.random.words(),
@@ -282,6 +282,7 @@ describe('*********** USERS ***********', () => {
         .set('Authorization', `Bearer ${tokens.admin}`)
         .send(user)
         .end((error, res) => {
+          console.log('res.body, ', res.body)
           res.should.have.status(200)
           res.body.should.be.a('object')
           res.body.should.have.property('_id').eql(_id)
@@ -334,7 +335,7 @@ describe('*********** USERS ***********', () => {
   describe('/DELETE/:_id user', () => {
     it('it should DELETE a user given the _id', (done) => {
       const user = {
-        memberId: faker.internet.password(),
+        memberId: faker.internet.password().replace(/_/g, ''),
         email: faker.internet.email(),
         password: faker.internet.password(),
         displayName: faker.random.words(),
