@@ -114,16 +114,10 @@ exports.getItem = async (req, res) => {
 exports.updateItem = async (req, res) => {
   try {
     const data = matchedData(req)
-    console.log('req, ', req)
     const _id = await utils.isIDGood(data._id)
-    const doesEmailExists = await emailer.emailExistsExcludingMyself(
-      _id,
-      req.user.email
-    )
-    if (!doesEmailExists) {
-      await saveUserAccess(req)
-      res.status(200).json(await db.updateItem(_id, model, req))
-    }
+
+    await saveUserAccess(req)
+    res.status(200).json(await db.updateItem(_id, model, data))
   } catch (error) {
     utils.handleError(res, error)
   }

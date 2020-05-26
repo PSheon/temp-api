@@ -282,7 +282,6 @@ describe('*********** USERS ***********', () => {
         .set('Authorization', `Bearer ${tokens.admin}`)
         .send(user)
         .end((error, res) => {
-          console.log('res.body, ', res.body)
           res.should.have.status(200)
           res.body.should.be.a('object')
           res.body.should.have.property('_id').eql(_id)
