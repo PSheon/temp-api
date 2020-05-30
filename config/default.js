@@ -2,6 +2,10 @@ module.exports = {
   /* API 端口 */
   API_PORT: 3000,
 
+  /* Session 密鑰，開啟 Redis 快取後使用 Redis，否則使用本地文件 */
+  SESSION_SECRET: 'MyUltraSecurePassWordIWontForgetToChange',
+  ENABLE_REDIS_SESSION_CACHE: true,
+
   /* API 密鑰，預設 3 天過期 */
   JWT_SECRET: 'MyUltraSecurePassWordIWontForgetToChange',
   JWT_EXPIRATION_IN_MINUTES: 4320,

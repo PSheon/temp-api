@@ -491,11 +491,30 @@ exports.login = async (req, res) => {
       user.loginAttempts = 0
       await saveLoginAttemptsToDB(user)
       await saveUserAccess(req, user, user)
+      req.session.user = { _id: user._id, email: user.email }
       res.status(200).json({
         token: generateToken(user._id),
         user: setUserInfo(user)
       })
     }
+  } catch (error) {
+    utils.handleError(res, error)
+  }
+}
+
+/**
+ * Logout function called by route
+ * @param {Object} req - request object
+ * @param {Object} res - response object
+ */
+exports.logout = async (req, res) => {
+  try {
+    const data = matchedData(req)
+    const user = await findUser(data.email)
+
+    await saveUserAccess(req, user, user)
+    req.session.user = null
+    res.status(200).json({ message: 'logout' })
   } catch (error) {
     utils.handleError(res, error)
   }

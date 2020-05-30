@@ -11,14 +11,15 @@ const i18n = require('i18n')
 const path = require('path')
 const swaggerJsdoc = require('swagger-jsdoc')
 const swaggerUi = require('swagger-ui-express')
-const FileStreamRotator = require('file-stream-rotator')
 
 const setupBanner = require('./utils/setup/banner')
 const setupConfigChecker = require('./utils/setup/config-checker')
 const setupDirectory = require('./utils/setup/environment-directory')
 const setupSocket = require('./utils/setup/socket')
+const setupSession = require('./utils/setup/session')
 const setupDocker = require('./utils/setup/docker')
 const setupMongo = require('./utils/setup/mongo')
+const setupLogger = require('./utils/setup/logger')
 
 const { AppManager } = require('./plugins/app-manager')
 const { QueueManager } = require('./plugins/queue-manager')
@@ -34,7 +35,6 @@ const Server = require('http').createServer(app)
 /* Setup Banner information */
 setupBanner()
 /* Setup process environment */
-// TODO
 setupConfigChecker(PROCESS_ENV)
 /* Setup necessary directory */
 setupDirectory({ baseDirName: __dirname })
@@ -69,25 +69,7 @@ if (PROCESS_ENV.ENABLE_SWAGGER_DOCS_UI) {
 
 /* Enable only in development HTTP request logger middleware */
 if (process.env.NODE_ENV === 'production' && PROCESS_ENV.ENABLE_LOG_RECORDER) {
-  app.use(
-    morgan(
-      `:remote-addr @:req[Authorization] - [:date[iso]] "HTTP/:http-version :method :url" <:status> :res[content-length] ":referrer" ":user-agent"`,
-      {
-        skip: (req) =>
-          !req.originalUrl.startsWith('/api') &&
-          !req.originalUrl.startsWith('/auth'),
-        stream: FileStreamRotator.getStream({
-          date_format: 'YYYYMMDD', // eslint-disable-line
-          filename: path.join(
-            path.join(__dirname, 'logs'),
-            'access-%DATE%.log'
-          ),
-          frequency: 'daily',
-          verbose: false
-        })
-      }
-    )
-  )
+  app.use(setupLogger())
 } else {
   app.use(morgan('dev'))
 }
@@ -105,6 +87,9 @@ if (PROCESS_ENV.ENABLE_REDIS_CACHE) {
   })
   app.use(cache)
 }
+
+/* Security Session */
+app.use(setupSession())
 
 /* for parsing json */
 app.use(
