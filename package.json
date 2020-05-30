@@ -9,10 +9,10 @@
     "url": "https://github.com/PSheon/Node-API-skeleton.git"
   },
   "scripts": {
+    "dev": "NODE_ENV=development cross-env nodemon server.js",
+    "test": "NODE_ENV=test npm run fresh-db && npm run mocha",
     "start": "NODE_ENV=production cross-env pm2 start server.js --name API -i 4",
     "mocha": "NODE_ENV=test nyc mocha --timeout=5000 --exit",
-    "test": "NODE_ENV=test npm run fresh-db && npm run mocha",
-    "dev": "NODE_ENV=development cross-env nodemon server.js",
     "fresh-db": "npm run clean-db && npm run seed-db",
     "clean-db": "NODE_ENV=test node utils/database/clean.js",
     "seed-db": "NODE_ENV=test node utils/database/seed.js",

@@ -14,7 +14,7 @@ const collections = seeder.readCollectionsFromPath(
 )
 
 const main = async () => {
-  const spinner = new ora('清理資料庫...').start()
+  const spinner = new ora('更新資料庫...').start()
 
   try {
     await seeder.import(collections)

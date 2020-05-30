@@ -21,13 +21,15 @@ module.exports = () => {
           process.exit(1)
         }
 
-        dialog.header(`Starting Server`, { align: `center` })
-        dialog.footer(`DB Connection: OK`, { align: `center` })
-        dialog.append(`Port: ${PROCESS_ENV.PORT || 3000}`)
-        dialog.append(`URL: http://localhost:${PROCESS_ENV.PORT || 3000}`)
-        dialog.append(`NODE_ENV: ${process.env.NODE_ENV}`)
-        dialog.append(`Database: MongoDB`)
-        console.log(dialog.render({ corner: 'round', width: `dynamic` }))
+        if (process.env.NODE_ENV !== 'test') {
+          dialog.header(`Starting Server`, { align: `center` })
+          dialog.footer(`DB Connection: OK`, { align: `center` })
+          dialog.append(`Port: ${PROCESS_ENV.PORT || 3000}`)
+          dialog.append(`URL: http://localhost:${PROCESS_ENV.PORT || 3000}`)
+          dialog.append(`NODE_ENV: ${process.env.NODE_ENV}`)
+          dialog.append(`Database: MongoDB`)
+          console.log(dialog.render({ corner: 'round', width: `dynamic` }))
+        }
       }
     )
     mongoose.set('useCreateIndex', true)
