@@ -1456,6 +1456,11 @@ console-control-strings@^1.0.0, console-control-strings@~1.1.0:
   resolved "https://registry.yarnpkg.com/console-control-strings/-/console-control-strings-1.1.0.tgz#3d7cf4464db6446ea644bf4b39507f9851008e8e"
   integrity sha1-PXz0Rk22RG6mRL9LOVB/mFEAjo4=
 
+console-dialog@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/console-dialog/-/console-dialog-1.0.6.tgz#242980f9bbddd44006986cb2d8ec3cea96c0f6ea"
+  integrity sha512-jfVwZO8ZCIIhWKxrXeu6Inw5/JMrEhUlgsBkGO8OLSk+J+PibLbstTvSmYvB+J28oUpYdUh98Wx94hpQgJUeSg==
+
 consolidate@^0.15.1:
   version "0.15.1"
   resolved "https://registry.yarnpkg.com/consolidate/-/consolidate-0.15.1.tgz#21ab043235c71a07d45d9aad98593b0dba56bab7"

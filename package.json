@@ -37,6 +37,7 @@
     "chalk": "^4.0.0",
     "compression": "^1.7.4",
     "config": "^3.3.1",
+    "console-dialog": "^1.0.6",
     "cors": "^2.8.5",
     "date-fns": "^2.11.1",
     "dockerode": "^3.2.0",

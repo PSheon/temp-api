@@ -1,10 +1,12 @@
 const PROCESS_ENV = require('config')
+const consoleDialog = require('console-dialog')
 const mongoose = require('mongoose')
 const loadModels = require('../../app/models')
 
 module.exports = () => {
   const connect = () => {
     mongoose.Promise = global.Promise
+    const dialog = consoleDialog()
 
     mongoose.connect(
       PROCESS_ENV.MONGO_URI,
@@ -14,20 +16,18 @@ module.exports = () => {
         useUnifiedTopology: true
       },
       (err) => {
-        let dbStatus = ''
         if (err) {
-          dbStatus = `*    Error connecting to DB: ${err}\n****************************\n`
+          console.log(`Database error: ${err}`)
+          process.exit(1)
         }
-        dbStatus = `*    DB Connection: OK\n****************************\n`
-        if (process.env.NODE_ENV !== 'test') {
-          // Prints initialization
-          console.log('****************************')
-          console.log('*    Starting Server')
-          console.log(`*    Port: ${PROCESS_ENV.PORT || 3000}`)
-          console.log(`*    NODE_ENV: ${process.env.NODE_ENV}`)
-          console.log(`*    Database: MongoDB`)
-          console.log(dbStatus)
-        }
+
+        dialog.header(`Starting Server`, { align: `center` })
+        dialog.footer(`DB Connection: OK`, { align: `center` })
+        dialog.append(`Port: ${PROCESS_ENV.PORT || 3000}`)
+        dialog.append(`URL: http://localhost:${PROCESS_ENV.PORT || 3000}`)
+        dialog.append(`NODE_ENV: ${process.env.NODE_ENV}`)
+        dialog.append(`Database: MongoDB`)
+        console.log(dialog.render({ corner: 'round', width: `dynamic` }))
       }
     )
     mongoose.set('useCreateIndex', true)
