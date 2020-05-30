@@ -47,7 +47,7 @@ module.exports = {
   EMAIL_FROM_NAME: 'My Project',
   EMAIL_FROM_ADDRESS: 'info@myproject.com',
   EMAIL_SMTP_DOMAIN_MAILGUN: 'myproject.com',
-  EMAIL_SMTP_API_MAILGUN: 123456,
+  EMAIL_SMTP_API_MAILGUN: 'mailgun_api',
 
   FRONTEND_URL: 'http://localhost:8080',
 

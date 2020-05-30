@@ -1,7 +1,9 @@
-// TODO
+// TODO find better connection
 const Queue = require('bull')
 
-const echoAppQueue = new Queue('Echo App setup')
+const echoAppQueue = new Queue('Echo App setup', {
+  redis: { port: 6379, host: '0.0.0.0' }
+})
 
 echoAppQueue.process((job, done) => {
   job.progress(50)

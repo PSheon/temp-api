@@ -17,6 +17,7 @@ const setupBanner = require('./utils/setup/banner')
 const setupConfigChecker = require('./utils/setup/config-checker')
 const setupDirectory = require('./utils/setup/environment-directory')
 const setupSocket = require('./utils/setup/socket')
+const setupDocker = require('./utils/setup/docker')
 const setupMongo = require('./utils/setup/mongo')
 
 const { AppManager } = require('./plugins/app-manager')
@@ -42,6 +43,8 @@ const Socket = setupSocket({
   server: Server,
   authorize: PROCESS_ENV.ENABLE_SOCKET_AUTH
 })
+/* Setup Docker container */
+setupDocker()
 /* Setup MongoDB connection */
 setupMongo()
 

@@ -1,14 +1,28 @@
 version: '3'
 services:
+  mongo:
+    build:
+      context: ./docker/mongo
+      dockerfile: Dockerfile
+    restart: always
+    hostname: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+    ports:
+      - 27017:27017
+
   redis:
-    image: redis:latest
-    command: ["redis-server", "--appendonly", "yes"]
+    build:
+      context: ./docker/redis
+      dockerfile: Dockerfile
+    command: ['redis-server', '--appendonly', 'yes']
+    restart: always
     hostname: redis
     networks:
       - redis-net
     volumes:
       - redis-data:/data
-    restart: always
     ports:
       - '6379:6379'
 
@@ -22,8 +36,10 @@ services:
     volumes:
       - redis-data:/data
     depends_on:
-     - redis
+      - mongo
+      - redis
     links:
+      - mongo
       - redis
     ports:
       - 3000:3000
