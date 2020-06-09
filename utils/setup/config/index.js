@@ -1,5 +1,7 @@
 const ora = require('ora')
 const chalk = require('chalk')
+const moment = require('moment')
+require('moment/locale/zh-tw')
 
 const validate = require('./helpers/validate')
 
@@ -10,6 +12,10 @@ module.exports = (PROCESS_ENV) => {
 
   // ANCHOR find better solution
   validate(PROCESS_ENV)
+
+  /* Moment */
+  moment.locale('zh-tw')
+  moment.tz.setDefault('Asia/Taipei')
 
   spinner.succeed(`${chalk.green('[1/3]')} 簽訂合約`)
 }

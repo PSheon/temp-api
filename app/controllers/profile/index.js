@@ -1,8 +1,9 @@
+const { matchedData } = require('express-validator')
 const userModel = require('../../models/user')
 const UserAccess = require('../../models/userAccess')
 const utils = require('../../middleware/utils')
-const { matchedData } = require('express-validator')
 const auth = require('../../middleware/auth')
+const { avatarProcessQueue } = require('../../../plugins/queue-manager/queues')
 
 /*********************
  * Private functions *
@@ -190,6 +191,27 @@ exports.changePassword = async (req, res) => {
       await saveUserAccess(req)
       res.status(200).json(await changePasswordInDB(_id, req))
     }
+  } catch (error) {
+    utils.handleError(res, error)
+  }
+}
+
+/**
+ * Update profile Avatar image function called by route
+ * @param {Object} req - request object
+ * @param {Object} res - response object
+ */
+exports.updateAvatar = async (req, res) => {
+  try {
+    // Find old Image, delete it if exist
+    const id = await utils.isIDGood(req.user._id)
+    avatarProcessQueue.add({
+      oldAvatar: req.user.photoURL,
+      newAvatar: req.file.filename
+    })
+    req.photoURL = req.file.filename
+
+    res.status(200).json(await updateProfileInDB(req, id))
   } catch (error) {
     utils.handleError(res, error)
   }

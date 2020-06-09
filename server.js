@@ -13,7 +13,7 @@ const swaggerJsdoc = require('swagger-jsdoc')
 const swaggerUi = require('swagger-ui-express')
 
 const setupBanner = require('./utils/setup/banner')
-const setupConfigChecker = require('./utils/setup/config-checker')
+const setupConfig = require('./utils/setup/config')
 const setupDirectory = require('./utils/setup/environment-directory')
 const setupSocket = require('./utils/setup/socket')
 const setupSession = require('./utils/setup/session')
@@ -35,7 +35,7 @@ const Server = require('http').createServer(app)
 /* Setup Banner information */
 setupBanner()
 /* Setup process environment */
-setupConfigChecker(PROCESS_ENV)
+setupConfig(PROCESS_ENV)
 /* Setup necessary directory */
 setupDirectory({ baseDirName: __dirname })
 /* Setup Socket server */
@@ -47,6 +47,17 @@ const Socket = setupSocket({
 setupDocker()
 /* Setup MongoDB connection */
 setupMongo()
+
+/* Plugins */
+AppManager()
+// TODO
+QueueManager()
+app.use('/queue-dashboard', bullBoardUI)
+// setTimeout(async () => {
+//   // echoAppQueue.add({ image: 'http://example.com/image1.tiff' })
+//   // const proc = await startApp('./app-stacks/echo-app.js', echoAppConnfig())
+//   // console.log('proc, ', proc)
+// }, 3000)
 
 /* API Status Monitor */
 if (PROCESS_ENV.ENABLE_STATUS_MONITOR) {
@@ -125,16 +136,5 @@ app.engine('html', require('ejs').renderFile)
 app.set('view engine', 'html')
 app.use(require('./app/routes'))
 Server.listen(PROCESS_ENV.API_PORT)
-
-/* Plugins */
-AppManager()
-// TODO
-QueueManager()
-app.use('/queue-dashboard', bullBoardUI)
-setTimeout(async () => {
-  // echoAppQueue.add({ image: 'http://example.com/image1.tiff' })
-  // const proc = await startApp('./app-stacks/echo-app.js', echoAppConnfig())
-  // console.log('proc, ', proc)
-}, 3000)
 
 module.exports = app // for testing

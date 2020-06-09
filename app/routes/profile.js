@@ -2,6 +2,7 @@ const controller = require('../controllers/profile')
 const validate = require('../controllers/profile/validate')
 const AuthController = require('../controllers/auth')
 const express = require('express')
+const uploader = require('../middleware/multer/avatar')
 const router = express.Router()
 require('../../utils/setup/passport')
 const passport = require('passport')
@@ -47,6 +48,18 @@ router.post(
   trimRequest.all,
   validate.changePassword,
   controller.changePassword
+)
+
+/*
+ * Update user avatar
+ */
+router.put(
+  '/avatar',
+  requireAuth,
+  AuthController.roleAuthorization(['trial', 'user', 'staff', 'admin']),
+  trimRequest.all,
+  uploader.single('avatarImage'),
+  controller.updateAvatar
 )
 
 /*

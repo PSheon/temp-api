@@ -41,6 +41,7 @@ exports.handleError = (res, err) => {
   }
   // Sends error to user
   res.status(err.code || 500).json({
+    // NOTE here
     errors: err.message || [{ msg: '發生未預期的狀況.' }]
   })
 }
