@@ -10,5 +10,10 @@ module.exports = () =>
     store: new RedisStore({ client: redisClient }),
     secret: PROCESS_ENV.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: {
+      maxAge: 6 * 3600 * 1000, // 6 hours
+      httpOnly: true,
+      secure: false
+    }
   })

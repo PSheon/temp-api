@@ -1,32 +1,27 @@
 const multer = require('multer')
 const path = require('path')
 const mime = require('mime-types')
+const moment = require('moment')
 const shortUUID = require('short-uuid')
+
+const ALLOWED_MIME_TYPES = ['audio/ogg', 'audio/mpeg', 'audio/aac']
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(
-      null,
-      path.resolve(__dirname, '../', '../', '../', 'uploads', 'document')
-    )
+    cb(null, path.resolve(__dirname, '../', '../', '../', 'uploads', 'audio'))
   },
   filename: (req, file, cb) => {
     cb(
       null,
-      `${req.user.displayName.replace(
-        ' ',
-        '_'
-      )}-${file.originalname.split('.')[0]}-${shortUUID.generate()}.${mime.extension(file.mimetype)}`
+      `${moment().utc().format('YYYYMMDD')}-${req.user.memberId
+        .split(/[ !@#$%^&*\(\)-+]/gms)
+        .join('_')}-${shortUUID.generate()}.${mime.extension(file.mimetype)}`
     )
   }
 })
 
 const fileFilter = (req, file, cb) => {
-  if (
-    file.mimetype === 'application/msword' ||
-    file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
-    file.mimetype === 'application/pdf'
-  ) {
+  if (ALLOWED_MIME_TYPES.includes(file.mimetype)) {
     // eslint-disable-next-line
     cb(null, true)
   } else {
@@ -42,5 +37,5 @@ const fileFilter = (req, file, cb) => {
 module.exports = multer({
   storage,
   fileFilter,
-  limits: 1024 * 1024 * 30
+  limits: 1024 * 1024 * 50
 })

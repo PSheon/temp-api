@@ -4,6 +4,8 @@ const mime = require('mime-types')
 const moment = require('moment')
 const shortUUID = require('short-uuid')
 
+const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/svg+xml']
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, path.resolve(__dirname, '../', '../', '../', 'uploads', 'avatar'))
@@ -19,11 +21,7 @@ const storage = multer.diskStorage({
 })
 
 const fileFilter = (req, file, cb) => {
-  if (
-    file.mimetype === 'image/jpeg' ||
-    file.mimetype === 'image/png' ||
-    file.mimetype === 'image/svg+xml'
-  ) {
+  if (ALLOWED_MIME_TYPES.includes(file.mimetype)) {
     // eslint-disable-next-line
     cb(null, true)
   } else {
@@ -39,5 +37,5 @@ const fileFilter = (req, file, cb) => {
 module.exports = multer({
   storage,
   fileFilter,
-  limits: 1024 * 1024 * 5
+  limits: 1024 * 1024 * 10
 })

@@ -1,26 +1,13 @@
 const { matchedData } = require('express-validator')
-const userModel = require('../../models/user')
-const UserAccess = require('../../models/userAccess')
+const model = require('../../models/user')
 const utils = require('../../middleware/utils')
 const auth = require('../../middleware/auth')
+const db = require('../../middleware/db')
 const { avatarProcessQueue } = require('../../../plugins/queue-manager/queues')
 
 /*********************
  * Private functions *
  *********************/
-
-/**
- * Gets profile from database by id
- * @param {string} id - user id
- */
-const getProfileFromDB = async (id) => {
-  return new Promise((resolve, reject) => {
-    userModel.findById(id, '-_id -updatedAt -createdAt', (err, user) => {
-      utils.itemNotFound(err, user, reject, 'NOT_FOUND')
-      resolve(user)
-    })
-  })
-}
 
 /**
  * Updates profile in database
@@ -29,7 +16,7 @@ const getProfileFromDB = async (id) => {
  */
 const updateProfileInDB = async (req, _id) => {
   return new Promise((resolve, reject) => {
-    userModel.findByIdAndUpdate(
+    model.findByIdAndUpdate(
       _id,
       req,
       {
@@ -51,7 +38,7 @@ const updateProfileInDB = async (req, _id) => {
  */
 const findUser = async (id) => {
   return new Promise((resolve, reject) => {
-    userModel.findById(id, 'password email', (err, user) => {
+    model.findById(id, 'password email', (err, user) => {
       utils.itemNotFound(err, user, reject, 'USER_DOES_NOT_EXIST')
       resolve(user)
     })
@@ -75,7 +62,7 @@ const passwordsDoNotMatch = async () => {
  */
 const changePasswordInDB = async (id, req) => {
   return new Promise((resolve, reject) => {
-    userModel.findById(id, '+password', (err, user) => {
+    model.findById(id, '+password', (err, user) => {
       utils.itemNotFound(err, user, reject, 'NOT_FOUND')
 
       // Assigns new password to user
@@ -92,66 +79,20 @@ const changePasswordInDB = async (id, req) => {
   })
 }
 
-/**
- * Gets last 15 accesses log from database
- */
-const findUserAccesses = async (email) => {
-  return new Promise((resolve, reject) => {
-    UserAccess.find(
-      { email, action: { $ne: '/auth/access-token' } },
-      '-email -updatedAt',
-      {
-        sort: {
-          updatedAt: -1
-        },
-        limit: 15
-      },
-      (err, accessHistory) => {
-        utils.itemNotFound(err, accessHistory, reject, 'NOT_FOUND')
-        resolve(accessHistory)
-      }
-    )
-  })
-}
-/**
- * Saves a user access
- * @param {Object} req - request object
- * @param {Object} user - user object
- */
-const saveUserAccess = async (req, user) => {
-  return new Promise((resolve, reject) => {
-    const userAccess = new UserAccess({
-      email: !!user && !!user.email ? user.email : req.user.email,
-      ip: utils.getIP(req),
-      browser: utils.getBrowserInfo(req),
-      country: utils.getCountry(req),
-      method: req.method,
-      action: `${req.baseUrl}${req.path}`
-    })
-    userAccess.save((err) => {
-      if (err) {
-        reject(utils.buildErrObject(422, err.message))
-      }
-
-      resolve()
-    })
-  })
-}
-
 /********************
  * Public functions *
  ********************/
 
 /**
- * Get profile function called by route
+ * Get Profile function called by route
  * @param {Object} req - request object
  * @param {Object} res - response object
  */
-exports.getProfile = async (req, res) => {
+exports.getItem = async (req, res) => {
   try {
-    const _id = await utils.isIDGood(req.user._id)
-    await saveUserAccess(req)
-    res.status(200).json(await getProfileFromDB(_id))
+    const data = matchedData(req)
+    const _id = await utils.isIDGood(data._id)
+    res.status(200).json(await db.getItem(_id, model))
   } catch (error) {
     utils.handleError(res, error)
   }
@@ -166,7 +107,6 @@ exports.updateProfile = async (req, res) => {
   try {
     const _id = await utils.isIDGood(req.user._id)
     const data = matchedData(req)
-    await saveUserAccess(req)
     res.status(200).json(await updateProfileInDB(data, _id))
   } catch (error) {
     utils.handleError(res, error)
@@ -188,7 +128,6 @@ exports.changePassword = async (req, res) => {
       utils.handleError(res, await passwordsDoNotMatch())
     } else {
       // all ok, proceed to change password
-      await saveUserAccess(req)
       res.status(200).json(await changePasswordInDB(_id, req))
     }
   } catch (error) {
@@ -212,22 +151,6 @@ exports.updateAvatar = async (req, res) => {
     req.photoURL = req.file.filename
 
     res.status(200).json(await updateProfileInDB(req, id))
-  } catch (error) {
-    utils.handleError(res, error)
-  }
-}
-
-/**
- * Get last 15 access history by user _id
- * @param {Object} req - request object
- * @param {Object} res - response object
- */
-exports.getAccesses = async (req, res) => {
-  try {
-    await utils.isIDGood(req.user._id)
-    const email = req.user.email
-    await saveUserAccess(req)
-    res.status(200).json(await findUserAccesses(email))
   } catch (error) {
     utils.handleError(res, error)
   }

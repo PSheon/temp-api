@@ -4,10 +4,28 @@ const chalk = require('chalk')
 const fs = require('fs')
 const path = require('path')
 
-module.exports = ({ baseDirName }) => {
-  const spinner = new ora('檢查工廠設備...')
+const installFFMPEG = require('./helpers/install-ffmpeg')
 
-  // 圖片上傳路徑
+/* eslint max-statements: ["error", 25] */
+/* eslint complexity: ["error", 15] */
+module.exports = () => {
+  const spinner = new ora('檢查工廠設備...')
+  const baseDirName = path.resolve(__dirname, '../../../')
+
+  /* FFMPEG */
+  if (!fs.existsSync(path.join(baseDirName, 'ffmpeg'))) {
+    fs.mkdirSync(path.join(baseDirName, 'ffmpeg'))
+  }
+  if (!fs.existsSync(path.join(baseDirName, 'ffmpeg', 'ffmpeg'))) {
+    console.log(`安裝 'ffmpeg'`)
+    installFFMPEG(baseDirName)
+  }
+  if (!fs.existsSync(path.join(baseDirName, 'ffmpeg', 'ffprobe'))) {
+    console.log(`安裝 'ffprobe'`)
+    installFFMPEG(baseDirName)
+  }
+
+  /* 圖片ｌ音樂 上傳路徑 */
   if (!fs.existsSync(path.join(baseDirName, 'uploads'))) {
     fs.mkdirSync(path.join(baseDirName, 'uploads'))
   }
@@ -16,6 +34,9 @@ module.exports = ({ baseDirName }) => {
   }
   if (!fs.existsSync(path.join(baseDirName, 'uploads', 'avatar'))) {
     fs.mkdirSync(path.join(baseDirName, 'uploads', 'avatar'))
+  }
+  if (!fs.existsSync(path.join(baseDirName, 'uploads', 'audio'))) {
+    fs.mkdirSync(path.join(baseDirName, 'uploads', 'audio'))
   }
 
   if (

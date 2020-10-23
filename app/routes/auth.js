@@ -78,4 +78,15 @@ router.post(
   controller.getRefreshToken
 )
 
+/*
+ * Logout
+ */
+router.post(
+  '/logout',
+  requireAuth,
+  AuthController.roleAuthorization(['trial', 'user', 'staff', 'admin']),
+  trimRequest.all,
+  controller.logout
+)
+
 module.exports = router

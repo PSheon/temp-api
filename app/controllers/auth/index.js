@@ -60,7 +60,6 @@ const setUserInfo = (req) => {
     email: req.email,
     role: req.role,
     google: req.google ? req.google : null,
-    displayName: req.displayName,
     photoURL: req.photoURL,
     phone: req.phone,
     shortcuts: req.shortcuts,
@@ -78,32 +77,6 @@ const setUserInfo = (req) => {
     }
   }
   return user
-}
-
-/**
- * Saves a user access
- * @param {Object} req - request object
- * @param {Object} user - user object
- */
-const saveUserAccess = async (req, user) => {
-  return new Promise((resolve, reject) => {
-    // FIXME 測試程式錯誤
-    const userAccess = new UserAccess({
-      email: !!user && !!user.email ? user.email : req.user.email,
-      ip: utils.getIP(req),
-      browser: utils.getBrowserInfo(req),
-      country: utils.getCountry(req),
-      method: req.method,
-      action: `${req.baseUrl}${req.path}`
-    })
-    userAccess.save((err) => {
-      if (err) {
-        reject(utils.buildErrObject(422, err.message))
-      }
-
-      resolve()
-    })
-  })
 }
 
 /**
@@ -195,7 +168,7 @@ const findUser = async (email) => {
       {
         email
       },
-      'password loginAttempts blockExpires name email role verified verification',
+      'password loginAttempts blockExpires displayName memberId email role verified verification',
       (err, item) => {
         utils.itemNotFound(err, item, reject, 'USER_DOES_NOT_EXIST')
         resolve(item)
@@ -488,10 +461,10 @@ exports.login = async (req, res) => {
       utils.handleError(res, await passwordsDoNotMatch(user))
     } else {
       // all ok, register access and return token
+      req.session.userId = user._id
+      req.session.userMemberId = user.memberId
       user.loginAttempts = 0
       await saveLoginAttemptsToDB(user)
-      await saveUserAccess(req, user, user)
-      req.session.user = { _id: user._id, email: user.email }
       res.status(200).json({
         token: generateToken(user._id),
         user: setUserInfo(user)
@@ -509,11 +482,9 @@ exports.login = async (req, res) => {
  */
 exports.logout = async (req, res) => {
   try {
-    const data = matchedData(req)
-    const user = await findUser(data.email)
-
-    await saveUserAccess(req, user, user)
-    req.session.user = null
+    delete req.session.userId
+    delete req.session.userMemberId
+    req.session.destroy()
     res.status(200).json({ message: 'logout' })
   } catch (error) {
     utils.handleError(res, error)
@@ -534,6 +505,8 @@ exports.register = async (req, res) => {
     if (!doesEmailExists) {
       const item = await registerUser(data)
       const userInfo = setUserInfo(item)
+      req.session.userId = userInfo._id
+      req.session.userMemberId = userInfo.memberId
       const response = returnRegisterToken(item, userInfo)
       emailer.sendRegistrationEmailMessage(locale, item)
       res.status(201).json(response)
@@ -552,7 +525,6 @@ exports.verify = async (req, res) => {
   try {
     const data = matchedData(req)
     const user = await verificationExists(data.verification)
-    await saveUserAccess(req, user)
     res.status(200).json(await verifyUser(user))
   } catch (error) {
     utils.handleError(res, error)
@@ -568,11 +540,8 @@ exports.forgotPassword = async (req, res) => {
   try {
     // Gets locale from header 'Accept-Language'
     const locale = req.getLocale()
-    const data = matchedData(req)
-    const user = await findUser(data.email)
     const item = await saveForgotPassword(req)
     emailer.sendResetPasswordEmailMessage(locale, item)
-    await saveUserAccess(req, user)
     res.status(200).json(forgotPasswordResponse(item))
   } catch (error) {
     utils.handleError(res, error)
@@ -590,7 +559,6 @@ exports.resetPassword = async (req, res) => {
     const forgotPassword = await findForgotPassword(data._id)
     const user = await findUserToResetPassword(forgotPassword.email)
     await updatePassword(data.password, user)
-    await saveUserAccess(req, user)
     const result = await markResetPasswordAsUsed(req, forgotPassword)
     res.status(200).json(result)
   } catch (error) {
@@ -607,7 +575,6 @@ exports.patchRole = async (req, res) => {
   try {
     const data = matchedData(req)
     await updateRole(data._id, data.role)
-    await saveUserAccess(req)
     res.status(200).json({ _id: data._id, role: data.role })
   } catch (error) {
     utils.handleError(res, error)
@@ -627,7 +594,6 @@ exports.getRefreshToken = async (req, res) => {
     userId = await utils.isIDGood(userId)
     const user = await findUserById(userId)
 
-    await saveUserAccess(req, user)
     // Removes user info from response
     // TODO
     // delete token.user

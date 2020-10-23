@@ -1,8 +1,4 @@
-const {
-  buildSuccObject,
-  buildErrObject,
-  itemNotFound
-} = require('../middleware/utils')
+const { buildSuccObject, buildErrObject, itemNotFound } = require('./utils')
 
 /**
  * Builds sorting

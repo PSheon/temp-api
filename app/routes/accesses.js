@@ -1,5 +1,5 @@
-const controller = require('../controllers/users')
-const validate = require('../controllers/users/validate')
+const controller = require('../controllers/accesses')
+const validate = require('../controllers/accesses/validate')
 const AuthController = require('../controllers/auth')
 const express = require('express')
 const router = express.Router()
@@ -11,11 +11,11 @@ const requireAuth = passport.authenticate('jwt', {
 const trimRequest = require('trim-request')
 
 /*
- * Users routes
+ * Accesses routes
  */
 
 /*
- * Get User route
+ * Get Access route
  */
 router.get(
   '/:_id',
@@ -27,7 +27,7 @@ router.get(
 )
 
 /*
- * Get Users route
+ * Get Accesses route
  */
 router.get(
   '/',
@@ -38,7 +38,7 @@ router.get(
 )
 
 /*
- * Create new User route
+ * Create new Access route
  */
 // router.post(
 //   '/',
@@ -50,7 +50,7 @@ router.get(
 // )
 
 /*
- * Update User route
+ * Update Access route
  */
 router.patch(
   '/:_id',
@@ -62,7 +62,7 @@ router.patch(
 )
 
 /*
- * Delete User route
+ * Delete Access route
  */
 router.delete(
   '/:_id',

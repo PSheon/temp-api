@@ -1,4 +1,5 @@
 const PROCESS_ENV = require('config')
+
 const express = require('express')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
@@ -15,7 +16,6 @@ const swaggerUi = require('swagger-ui-express')
 const setupBanner = require('./utils/setup/banner')
 const setupConfig = require('./utils/setup/config')
 const setupDirectory = require('./utils/setup/environment-directory')
-const setupSocket = require('./utils/setup/socket')
 const setupSession = require('./utils/setup/session')
 const setupDocker = require('./utils/setup/docker')
 const setupMongo = require('./utils/setup/mongo')
@@ -24,8 +24,9 @@ const setupLogger = require('./utils/setup/logger')
 const { AppManager } = require('./plugins/app-manager')
 const { QueueManager } = require('./plugins/queue-manager')
 const { StatusMonitor } = require('./plugins/status-monitor')
+const { SocketServer } = require('./plugins/socket-server')
 // TODO
-const { UI: bullBoardUI } = require('bull-board')
+const { UI: BullBoardUI } = require('bull-board')
 // const { echoAppQueue } = require('./plugins/queue-manager/queues')
 // const { startApp } = require('./plugins/app-manager')
 // const echoAppConnfig = require('./plugins/app-manager/echo-app-config')
@@ -35,24 +36,23 @@ const Server = require('http').createServer(app)
 /* Setup Banner information */
 setupBanner()
 /* Setup process environment */
-setupConfig(PROCESS_ENV)
+setupConfig()
 /* Setup necessary directory */
-setupDirectory({ baseDirName: __dirname })
-/* Setup Socket server */
-const Socket = setupSocket({
-  server: Server,
-  authorize: PROCESS_ENV.ENABLE_SOCKET_AUTH
-})
+setupDirectory()
 /* Setup Docker container */
 setupDocker()
 /* Setup MongoDB connection */
 setupMongo()
 
 /* Plugins */
+const Socket = SocketServer({
+  server: Server,
+  authorize: PROCESS_ENV.ENABLE_SOCKET_AUTH
+})
 AppManager()
 // TODO
 QueueManager()
-app.use('/queue-dashboard', bullBoardUI)
+app.use('/queue-dashboard', BullBoardUI)
 // setTimeout(async () => {
 //   // echoAppQueue.add({ image: 'http://example.com/image1.tiff' })
 //   // const proc = await startApp('./app-stacks/echo-app.js', echoAppConnfig())
@@ -100,6 +100,7 @@ if (PROCESS_ENV.ENABLE_REDIS_CACHE) {
 }
 
 /* Security Session */
+app.set('trust proxy', 1)
 app.use(setupSession())
 
 /* for parsing json */
@@ -126,6 +127,7 @@ i18n.configure({
 app.use(i18n.init)
 
 /* Init all other stuff */
+// app.use(cors({ origin: 'http://localhost:8080', credentials: true }))
 app.use(cors())
 app.use(passport.initialize())
 app.use(compression())

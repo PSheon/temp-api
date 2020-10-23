@@ -1,5 +1,4 @@
 const model = require('../../models/user')
-const UserAccess = require('../../models/userAccess')
 const uuid = require('uuid')
 const { matchedData } = require('express-validator')
 const utils = require('../../middleware/utils')
@@ -11,7 +10,7 @@ const emailer = require('../../middleware/emailer')
  *********************/
 
 /**
- * Creates a new item in database
+ * Creates a new User in database
  * @param {Object} req - request object
  */
 const createItem = async (req) => {
@@ -46,52 +45,13 @@ const createItem = async (req) => {
     })
   })
 }
-/**
- * Saves a user access
- * @param {Object} req - request object
- * @param {Object} user - user object
- */
-const saveUserAccess = async (req, user) => {
-  return new Promise((resolve, reject) => {
-    const userAccess = new UserAccess({
-      email: !!user && !!user.email ? user.email : req.user.email,
-      ip: utils.getIP(req),
-      browser: utils.getBrowserInfo(req),
-      country: utils.getCountry(req),
-      method: req.method,
-      action: `${req.baseUrl}${req.path}`
-    })
-    userAccess.save((err) => {
-      if (err) {
-        reject(utils.buildErrObject(422, err.message))
-      }
-
-      resolve()
-    })
-  })
-}
 
 /********************
  * Public functions *
  ********************/
 
 /**
- * Get items function called by route
- * @param {Object} req - request object
- * @param {Object} res - response object
- */
-exports.getItems = async (req, res) => {
-  try {
-    const query = await db.checkQueryString(req.query)
-    await saveUserAccess(req)
-    res.status(200).json(await db.getItems(req, model, query))
-  } catch (error) {
-    utils.handleError(res, error)
-  }
-}
-
-/**
- * Get item function called by route
+ * Get User function called by route
  * @param {Object} req - request object
  * @param {Object} res - response object
  */
@@ -99,7 +59,6 @@ exports.getItem = async (req, res) => {
   try {
     const data = matchedData(req)
     const _id = await utils.isIDGood(data._id)
-    await saveUserAccess(req)
     res.status(200).json(await db.getItem(_id, model))
   } catch (error) {
     utils.handleError(res, error)
@@ -107,7 +66,21 @@ exports.getItem = async (req, res) => {
 }
 
 /**
- * Update item function called by route
+ * Get Users function called by route
+ * @param {Object} req - request object
+ * @param {Object} res - response object
+ */
+exports.getItems = async (req, res) => {
+  try {
+    const query = await db.checkQueryString(req.query)
+    res.status(200).json(await db.getItems(req, model, query))
+  } catch (error) {
+    utils.handleError(res, error)
+  }
+}
+
+/**
+ * Update User function called by route
  * @param {Object} req - request object
  * @param {Object} res - response object
  */
@@ -116,7 +89,6 @@ exports.updateItem = async (req, res) => {
     const data = matchedData(req)
     const _id = await utils.isIDGood(data._id)
 
-    await saveUserAccess(req)
     res.status(200).json(await db.updateItem(_id, model, data))
   } catch (error) {
     utils.handleError(res, error)
@@ -124,7 +96,7 @@ exports.updateItem = async (req, res) => {
 }
 
 /**
- * Create item function called by route
+ * Create User function called by route
  * @param {Object} req - request object
  * @param {Object} res - response object
  */
@@ -137,7 +109,6 @@ exports.createItem = async (req, res) => {
     if (!doesEmailExists) {
       const item = await createItem(data)
       emailer.sendRegistrationEmailMessage(locale, item)
-      await saveUserAccess(req)
       res.status(201).json(item)
     }
   } catch (error) {
@@ -146,7 +117,7 @@ exports.createItem = async (req, res) => {
 }
 
 /**
- * Delete item function called by route
+ * Delete User function called by route
  * @param {Object} req - request object
  * @param {Object} res - response object
  */
@@ -154,7 +125,6 @@ exports.deleteItem = async (req, res) => {
   try {
     const data = matchedData(req)
     const _id = await utils.isIDGood(data._id)
-    await saveUserAccess(req)
     res.status(200).json(await db.deleteItem(_id, model))
   } catch (error) {
     utils.handleError(res, error)

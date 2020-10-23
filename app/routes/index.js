@@ -1,8 +1,20 @@
 const express = require('express')
 const router = express.Router()
 const fs = require('fs')
+const { getMethod, removeExtensionFromFile } = require('../middleware/utils')
+const { saveUserAccess } = require('../middleware/logger')
 const routesPath = `${__dirname}/`
-const { removeExtensionFromFile } = require('../middleware/utils')
+
+/*
+ * Log all requests
+ */
+router.use('*', async (req, res, next) => {
+  if (getMethod(req)) {
+    await saveUserAccess(req)
+  }
+
+  next()
+})
 
 /*
  * Load routes statically and/or dynamically

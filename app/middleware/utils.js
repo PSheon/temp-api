@@ -30,6 +30,21 @@ exports.getCountry = (req) =>
   req.headers['cf-ipcountry'] ? req.headers['cf-ipcountry'] : 'XX'
 
 /**
+ * Gets request method
+ * @param {*} req - request object
+ */
+exports.getMethod = (req) => {
+  const METHOD_TABLE = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
+  return METHOD_TABLE.find((item) => item === req.method)
+}
+
+/**
+ * Gets request pathname
+ * @param {*} req - request object
+ */
+exports.getPathname = (req) => `${req.baseUrl}${req.path}`
+
+/**
  * Handles error by printing to console in development env and builds and sends an error response
  * @param {Object} res - response object
  * @param {Object} err - error object

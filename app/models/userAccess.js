@@ -3,14 +3,17 @@ const validator = require('validator')
 
 const UserAccessSchema = new mongoose.Schema(
   {
-    email: {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    memberId: {
       type: String,
       validate: {
-        validator: validator.isEmail,
-        message: 'EMAIL_IS_NOT_VALID'
+        validator: validator.isAlphanumeric,
+        message: 'MEMBER_ID_ONLY_ACCEPT_ALPHA_NUMERIC'
       },
-      lowercase: true,
-      required: true
+      lowercase: true
     },
     ip: {
       type: String,
@@ -27,9 +30,9 @@ const UserAccessSchema = new mongoose.Schema(
     method: {
       type: String,
       required: true,
-      enum: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
+      enum: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OTHER']
     },
-    action: {
+    pathname: {
       type: String,
       required: true
     }

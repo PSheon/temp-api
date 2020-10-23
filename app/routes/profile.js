@@ -16,14 +16,14 @@ const trimRequest = require('trim-request')
  */
 
 /*
- * Get profile route
+ * Get Profiles route
  */
 router.get(
   '/',
   requireAuth,
   AuthController.roleAuthorization(['trial', 'user', 'staff', 'admin']),
   trimRequest.all,
-  controller.getProfile
+  controller.getItem
 )
 
 /*
@@ -65,12 +65,12 @@ router.put(
 /*
  * User's access history routes
  */
-router.post(
-  '/access-history',
-  requireAuth,
-  AuthController.roleAuthorization(['trial', 'user', 'staff', 'admin']),
-  trimRequest.all,
-  controller.getAccesses
-)
+// router.post(
+//   '/access-history',
+//   requireAuth,
+//   AuthController.roleAuthorization(['trial', 'user', 'staff', 'admin']),
+//   trimRequest.all,
+//   controller.getAccesses
+// )
 
 module.exports = router
