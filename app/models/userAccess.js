@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
+const mongoosePaginate = require('mongoose-paginate-v2')
 
 const UserAccessSchema = new mongoose.Schema(
   {
@@ -42,4 +43,5 @@ const UserAccessSchema = new mongoose.Schema(
     timestamps: true
   }
 )
+UserAccessSchema.plugin(mongoosePaginate)
 module.exports = mongoose.model('UserAccess', UserAccessSchema)

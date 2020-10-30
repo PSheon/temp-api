@@ -1,6 +1,7 @@
 module.exports = {
   /* API 端口 */
   API_PORT: 3000,
+  FRONTEND_URL: 'http://localhost:8080',
 
   /* Session 密鑰，開啟 Redis 快取後使用 Redis，否則使用本地文件 */
   SESSION_SECRET: 'MyUltraSecurePassWordIWontForgetToChange',
@@ -52,8 +53,6 @@ module.exports = {
   EMAIL_FROM_ADDRESS: 'info@myproject.com',
   EMAIL_SMTP_DOMAIN_MAILGUN: 'myproject.com',
   EMAIL_SMTP_API_MAILGUN: 'mailgun_api',
-
-  FRONTEND_URL: 'http://localhost:8080',
 
   /* Redis 快取 */
   ENABLE_REDIS_CACHE: false,

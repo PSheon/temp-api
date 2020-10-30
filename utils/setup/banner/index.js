@@ -1,8 +1,7 @@
 const CFonts = require('cfonts')
+const { formatter } = require('./helpers')
 
-const PACKAGE = require('../../package.json')
-
-const formatter = (name) => name.replace(/-/g, '|')
+const PACKAGE = require('../../../package.json')
 
 module.exports = () => {
   if (process.env.NODE_ENV === 'production') {
