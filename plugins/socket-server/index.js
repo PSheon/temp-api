@@ -8,7 +8,7 @@ const auth = require('../../app/middleware/auth')
 const User = require('../../app/models/user')
 
 const SocketServer = (config) => {
-  const spinner = new ora('檢查 Socket 連線...').start()
+  const spinner = new ora('檢查即時連線...').start()
   const validatedConfig = validate(config)
   const io = socketIo(validatedConfig.server)
 
@@ -40,7 +40,7 @@ const SocketServer = (config) => {
     })
   }
 
-  spinner.succeed(`${chalk.green('[3/3]')} Socket 連線正常`)
+  spinner.succeed(`${chalk.green('[3/3]')} 即時連線正常`)
   return io
 }
 

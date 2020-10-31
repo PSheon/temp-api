@@ -26,7 +26,7 @@ module.exports = {
         protocol: 'http',
         host: 'localhost',
         port: '3000',
-        path: '/api/cities/all'
+        path: '/api/api-docs'
       }
     ]
   },

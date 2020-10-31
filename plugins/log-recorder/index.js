@@ -1,8 +1,14 @@
+const ora = require('ora')
+const chalk = require('chalk')
 const path = require('path')
 const morgan = require('morgan')
 const FileStreamRotator = require('file-stream-rotator')
 
 const MorganFileLogRecorder = (app) => {
+  const spinner = new ora(
+    `設定 ${chalk.yellow('[File Log Recorder]')} 中...`
+  ).start()
+
   app.use(
     morgan(
       (tokens, req, res) =>
@@ -37,10 +43,18 @@ const MorganFileLogRecorder = (app) => {
       }
     )
   )
+
+  spinner.succeed(`${chalk.yellow('[File Log Recorder]')} 已啟用`)
 }
 
 const MorganConsoleLogger = (app) => {
+  const spinner = new ora(
+    `設定 ${chalk.yellow('[Console Log Recorder]')} 中...`
+  ).start()
+
   app.use(morgan('dev'))
+
+  spinner.succeed(`${chalk.yellow('[Console Log Recorder]')} 已啟用`)
 }
 
 module.exports = {

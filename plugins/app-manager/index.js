@@ -1,4 +1,5 @@
 const ora = require('ora')
+const chalk = require('chalk')
 const {
   getList,
   getApp,
@@ -12,9 +13,11 @@ const {
 } = require('./helpers')
 
 const AppManager = () => {
-  const spinner = new ora('喚醒工廠主管...').start()
+  const spinner = new ora(
+    `設定 ${chalk.yellow('[APP Message Queue Manager]')} 中...`
+  ).start()
 
-  spinner.succeed('工廠主管已上線')
+  spinner.succeed(`${chalk.yellow('[APP Message Queue Manager]')} 已啟用`)
 }
 
 module.exports = {

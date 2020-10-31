@@ -8,9 +8,9 @@ require('moment/locale/zh-tw')
 const validate = require('./helpers/validate')
 
 module.exports = () => {
-  console.log(`工廠運行環境 > ${chalk.blue(process.env.NODE_ENV)}`)
+  console.log(`運行環境 > ${chalk.blue(process.env.NODE_ENV)}`)
 
-  const spinner = new ora('檢查工廠合約...').start()
+  const spinner = new ora('檢查設定參數...').start()
 
   // ANCHOR find better solution
   validate(PROCESS_ENV)
@@ -19,5 +19,5 @@ module.exports = () => {
   moment.locale('zh-tw')
   moment.tz.setDefault('Asia/Taipei')
 
-  spinner.succeed(`${chalk.green('[1/3]')} 簽訂合約`)
+  spinner.succeed(`${chalk.green('[1/3]')} 設定正確`)
 }

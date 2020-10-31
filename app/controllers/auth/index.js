@@ -593,6 +593,8 @@ exports.getRefreshToken = async (req, res) => {
     let userId = await getUserIdFromToken(tokenEncrypted)
     userId = await utils.isIDGood(userId)
     const user = await findUserById(userId)
+    req.session.userId = user._id
+    req.session.userMemberId = user.memberId
 
     // Removes user info from response
     // TODO

@@ -9,7 +9,7 @@ const installFFMPEG = require('./helpers/install-ffmpeg')
 /* eslint max-statements: ["error", 25] */
 /* eslint complexity: ["error", 15] */
 module.exports = () => {
-  const spinner = new ora('檢查工廠設備...')
+  const spinner = new ora('檢查文件路徑中...')
   const baseDirName = path.resolve(__dirname, '../../../')
 
   /* FFMPEG */
@@ -53,5 +53,5 @@ module.exports = () => {
     fs.mkdirSync(path.join(baseDirName, 'logs'))
   }
 
-  spinner.succeed(`${chalk.green('[2/3]')} 工廠設備正常`)
+  spinner.succeed(`${chalk.green('[2/3]')} 文件路徑已建立`)
 }
