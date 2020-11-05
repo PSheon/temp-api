@@ -1,23 +1,109 @@
 <!DOCTYPE html>
-<html lang="zh-Hant-TW">
+<html lang="zh-Hans-TW">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-    <title>Node API Skeleton 中文模板</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Titillium+Web:400,600,700"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/assets/styles/main.css" />
+
+    <title>API Dashboard</title>
   </head>
 
   <body>
-    <h1 style="text-align: center; margin-top: 100px;">API 入口</h1>
-    <h2 style="text-align: center;">
-      更多資訊請查看:
-      <a target="_blank" href="https://github.com/PSheon/Node-API-skeleton">
-        Node-API-skeleton
-      </a>
-    </h2>
-  </body>
+    <div id="wrapper">
+      <div class="content-area">
+        <div class="container-fluid">
+          <div class="text-right mt-3 mb-3 d-fixed">
+            <a
+              href="/api-docs"
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              class="btn btn-outline-primary mr-2"
+            >
+              <span class="btn-text">API 文件</span>
+            </a>
+            <button class="btn btn-success" id="fusionexport-btn">
+              <span
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              <span class="btn-text">另存成 PDF</span>
+            </button>
+          </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
-  <script src="/main.js"></script>
+          <div class="main">
+            <div class="row sparkboxes mt-4 mb-3">
+              <div class="col-md-4 mb-4">
+                <div class="box box1">
+                  <div id="spark1"></div>
+                </div>
+              </div>
+              <div class="col-md-4 mb-4">
+                <div class="box box2">
+                  <div id="spark2"></div>
+                </div>
+              </div>
+              <div class="col-md-4 mb-4">
+                <div class="box box3">
+                  <div id="spark3"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col-md-6 mb-4">
+                <div class="box">
+                  <div id="bar"></div>
+                </div>
+              </div>
+              <div class="col-md-6 mb-4">
+                <div class="box">
+                  <div id="donut"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mb-4">
+              <div class="col-md-6 mb-4">
+                <div class="box">
+                  <div id="area"></div>
+                </div>
+              </div>
+              <div class="col-md-6 mb-4">
+                <div class="box">
+                  <div id="line"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.slim.min.js"></script>
+    <!-- <script src="/assets/apexcharts.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.22.1/apexcharts.min.js"></script>
+    <!-- installing few libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/downloadjs/1.4.8/download.min.js"></script>
+    <script src="/assets/data.js"></script>
+    <script src="/assets/scripts.js"></script>
+
+    <script></script>
+  </body>
 </html>
