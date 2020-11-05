@@ -29,6 +29,9 @@ module.exports = () => {
   if (!fs.existsSync(path.join(baseDirName, 'uploads'))) {
     fs.mkdirSync(path.join(baseDirName, 'uploads'))
   }
+  if (!fs.existsSync(path.join(baseDirName, 'uploads', 'temp'))) {
+    fs.mkdirSync(path.join(baseDirName, 'uploads', 'temp'))
+  }
   if (!fs.existsSync(path.join(baseDirName, 'uploads', 'image'))) {
     fs.mkdirSync(path.join(baseDirName, 'uploads', 'image'))
   }
@@ -53,5 +56,5 @@ module.exports = () => {
     fs.mkdirSync(path.join(baseDirName, 'logs'))
   }
 
-  spinner.succeed(`${chalk.green('[2/3]')} 文件路徑已建立`)
+  spinner.succeed(`${chalk.green('[文件路徑]')} 已建立`)
 }

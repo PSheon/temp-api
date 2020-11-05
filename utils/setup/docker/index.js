@@ -22,5 +22,5 @@ module.exports = async () => {
     process.exit(1)
   }
 
-  spinner.succeed(`${chalk.blue('[O]')} 已啟用所有容器`)
+  spinner.succeed(`${chalk.cyan('[Docker]')} 已啟用所有容器`)
 }

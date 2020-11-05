@@ -19,5 +19,5 @@ module.exports = () => {
   moment.locale('zh-tw')
   moment.tz.setDefault('Asia/Taipei')
 
-  spinner.succeed(`${chalk.green('[1/3]')} 設定正確`)
+  spinner.succeed(`${chalk.green('[環境設定]')} 格式正確`)
 }

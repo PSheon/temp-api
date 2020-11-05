@@ -22,7 +22,7 @@ module.exports = () => {
         }
 
         if (process.env.NODE_ENV !== 'test') {
-          dialog.header(`Starting Server`, { align: `center` })
+          dialog.header(`Backend API Server`, { align: `center` })
           dialog.footer(`DB Connection: OK`, { align: `center` })
           dialog.append(`Port: ${PROCESS_ENV.PORT || 3000}`)
           dialog.append(`URL: http://localhost:${PROCESS_ENV.PORT || 3000}`)

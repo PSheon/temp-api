@@ -40,7 +40,7 @@ const SocketServer = (config) => {
     })
   }
 
-  spinner.succeed(`${chalk.green('[3/3]')} 即時連線正常`)
+  spinner.succeed(`${chalk.green('[即時連線]')} 已開啟`)
   return io
 }
 

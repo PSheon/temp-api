@@ -19,7 +19,6 @@ const { SocketServer } = require('./plugins/socket-server')
 const { AppManager } = require('./plugins/app-manager')
 const { QueueManager } = require('./plugins/queue-manager')
 // TODO
-const { UI: BullBoardUI } = require('bull-board')
 // const { echoAppQueue } = require('./plugins/queue-manager/queues')
 // const { startApp } = require('./plugins/app-manager')
 // const echoAppConnfig = require('./plugins/app-manager/echo-app-config')
@@ -65,8 +64,7 @@ const Socket = SocketServer({
   authorize: PROCESS_ENV.ENABLE_SOCKET_AUTH
 })
 AppManager()
-QueueManager()
-app.use('/queue-dashboard', BullBoardUI)
+QueueManager(app)
 // TODO
 // setTimeout(async () => {
 //   // echoAppQueue.add({ image: 'http://example.com/image1.tiff' })
