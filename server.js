@@ -16,12 +16,11 @@ const setupDocker = require('./utils/setup/docker')
 const setupMongo = require('./utils/setup/mongo')
 
 const { SocketServer } = require('./plugins/socket-server')
-const { AppManager } = require('./plugins/app-manager')
-const { QueueManager } = require('./plugins/queue-manager')
 // TODO
-// const { echoAppQueue } = require('./plugins/queue-manager/queues')
+// const { AppManager } = require('./plugins/app-manager')
 // const { startApp } = require('./plugins/app-manager')
 // const echoAppConnfig = require('./plugins/app-manager/echo-app-config')
+const { QueueManager } = require('./plugins/queue-manager')
 const { StatusMonitor } = require('./plugins/status-monitor')
 const {
   MorganFileLogRecorder,
@@ -63,14 +62,13 @@ const Socket = SocketServer({
   server: Server,
   authorize: PROCESS_ENV.ENABLE_SOCKET_AUTH
 })
-AppManager()
-QueueManager(app)
+// AppManager(app)
 // TODO
-// setTimeout(async () => {
-//   // echoAppQueue.add({ image: 'http://example.com/image1.tiff' })
-//   // const proc = await startApp('./app-stacks/echo-app.js', echoAppConnfig())
-//   // console.log('proc, ', proc)
-// }, 3000)
+setTimeout(async () => {
+  // const proc = await startApp('./app-stacks/echo-app.js', echoAppConnfig())
+  // console.log('proc, ', proc)
+}, 3000)
+QueueManager(app)
 
 /* Security Session */
 RedisSession(app)

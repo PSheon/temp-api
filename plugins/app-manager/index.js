@@ -1,5 +1,6 @@
 const ora = require('ora')
 const chalk = require('chalk')
+// TODO
 const {
   getList,
   getApp,
@@ -12,10 +13,15 @@ const {
   deleteApp
 } = require('./helpers')
 
-const AppManager = () => {
+const AppManager = (app) => {
   const spinner = new ora(
     `設定 ${chalk.yellow('[APP Message Queue Manager]')} 中...`
   ).start()
+
+  // TODO
+  // app.use('/app-manager', (req, res, next) => {
+  //   next()
+  // })
 
   spinner.succeed(`${chalk.yellow('[APP Message Queue Manager]')} 已啟用`)
 }

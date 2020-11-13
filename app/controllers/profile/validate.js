@@ -32,6 +32,23 @@ exports.updateProfile = [
 ]
 
 /**
+ * Validates process Avatar request
+ */
+exports.processAvatar = [
+  check('avatarName')
+    .not()
+    .isEmpty()
+    .withMessage('AVATAR_SHOULD_NOT_BE_EMPTY')
+    .isLength({
+      max: 35
+    })
+    .withMessage('AVATA_NAME_TOO_LONG_MAX_35'),
+  (req, res, next) => {
+    validationResult(req, res, next)
+  }
+]
+
+/**
  * Validates change password request
  */
 exports.changePassword = [

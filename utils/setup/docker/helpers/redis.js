@@ -82,7 +82,7 @@ const startRedisContainer = (docker, containerId) =>
 module.exports = async (docker, spinner) => {
   const redisStatus = {}
 
-  spinner.text = '建立快取工廠中...'
+  spinner.text = '建立 Redis 容器中...'
   /* 尋找所有映像檔 */
   const IMAGES = await getImages(docker)
   /* 尋找所有容器 */
@@ -121,7 +121,7 @@ module.exports = async (docker, spinner) => {
     redisStatus.isNew = true
   }
 
-  spinner.text = '快取工廠已完成'
+  spinner.text = '[Redis] 已開啟'
 
   return redisStatus
 }

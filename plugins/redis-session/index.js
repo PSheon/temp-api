@@ -19,10 +19,8 @@ const RedisSession = (app) => {
       store: new RedisStore({ client: redisClient }),
       name: 'user',
       secret: PROCESS_ENV.SESSION_SECRET,
-      // resave: true,
-      // saveUninitialized: false,
-      resave: false,
-      saveUninitialized: true,
+      resave: true,
+      saveUninitialized: false,
       cookie: {
         maxAge: 6 * 3600 * 1000, // 6 hours
         httpOnly: true,

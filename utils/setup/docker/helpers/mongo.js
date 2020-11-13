@@ -81,7 +81,7 @@ const startMongoContainer = (docker, containerId) =>
 module.exports = async (docker, spinner) => {
   const mongoStatus = {}
 
-  spinner.text = '建立資料庫工廠中...'
+  spinner.text = '建立 MongoDB 中...'
   /* 尋找所有映像檔 */
   const IMAGES = await getImages(docker)
   /* 尋找所有容器 */
@@ -120,7 +120,7 @@ module.exports = async (docker, spinner) => {
     mongoStatus.isNew = true
   }
 
-  spinner.text = '資料庫工廠已完成'
+  spinner.text = '[MongoDB] 已開啟'
 
   return mongoStatus
 }

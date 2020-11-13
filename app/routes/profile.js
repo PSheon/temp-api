@@ -2,7 +2,7 @@ const controller = require('../controllers/profile')
 const validate = require('../controllers/profile/validate')
 const AuthController = require('../controllers/auth')
 const express = require('express')
-const uploader = require('../middleware/multer/avatar')
+const avatarUploader = require('../middleware/multer/avatar')
 const router = express.Router()
 require('../../utils/setup/passport')
 const passport = require('passport')
@@ -38,6 +38,15 @@ router.patch(
   controller.updateProfile
 )
 
+router.post(
+  '/me/avatar',
+  requireAuth,
+  AuthController.roleAuthorization(['trial', 'user', 'staff', 'admin']),
+  avatarUploader.single('avatarData'),
+  validate.processAvatar,
+  controller.processAvatar
+)
+
 /*
  * Change password route
  */
@@ -53,14 +62,14 @@ router.post(
 /*
  * Update user avatar
  */
-router.put(
-  '/avatar',
-  requireAuth,
-  AuthController.roleAuthorization(['trial', 'user', 'staff', 'admin']),
-  trimRequest.all,
-  uploader.single('avatarImage'),
-  controller.updateAvatar
-)
+// router.put(
+//   '/avatar',
+//   requireAuth,
+//   AuthController.roleAuthorization(['trial', 'user', 'staff', 'admin']),
+//   trimRequest.all,
+//   uploader.single('avatarImage'),
+//   controller.updateAvatar
+// )
 
 /*
  * User's access history routes

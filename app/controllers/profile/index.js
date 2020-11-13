@@ -114,6 +114,22 @@ exports.updateProfile = async (req, res) => {
 }
 
 /**
+ * Process avatar function called by route
+ * @param {Object} req - request object
+ * @param {Object} res - response object
+ */
+exports.processAvatar = async (req, res) => {
+  try {
+    // const id = await utils.isIDGood(req.user._id)
+    const data = matchedData(req)
+    await avatarProcessQueue.add({ avatarName: data.avatarName })
+    res.status(200).json({})
+  } catch (error) {
+    utils.handleError(res, error)
+  }
+}
+
+/**
  * Change password function called by route
  * @param {Object} req - request object
  * @param {Object} res - response object
