@@ -1,10 +1,10 @@
 const mongoose = require('mongoose')
-const validator = require('validator')
 const mongoosePaginate = require('mongoose-paginate-v2')
+const validator = require('validator')
 
 const CommoditySchema = new mongoose.Schema(
   {
-    commodityId: {
+    codeName: {
       type: String,
       validate: {
         validator: validator.isAlphanumeric,
@@ -12,7 +12,7 @@ const CommoditySchema = new mongoose.Schema(
       },
       lowercase: true
     },
-    title: {
+    displayName: {
       type: String
     },
     insight: {

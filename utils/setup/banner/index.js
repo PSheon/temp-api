@@ -1,7 +1,8 @@
 const CFonts = require('cfonts')
-const { formatter } = require('./helpers')
 
 const PACKAGE = require('../../../package.json')
+
+const { formatter } = require('./helpers')
 
 module.exports = () => {
   if (process.env.NODE_ENV === 'production') {

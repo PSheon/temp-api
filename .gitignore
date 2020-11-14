@@ -61,9 +61,8 @@ typings/
 
 # dotenv environment variables file
 # ignore production configuration
-config/development.js
-config/test.js
-config/production.js
+config/*.js
+!config/default.js
 
 # next.js build output
 .next
@@ -72,5 +71,3 @@ config/production.js
 !.gitkeep
 
 .history/
-
-app/controllers/playground.js

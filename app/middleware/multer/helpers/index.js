@@ -1,10 +1,5 @@
-const sanitize = (displayName) =>
-  displayName
-    .split(/[ -]/gmu)
-    .join('_')
-    .split(/[~!@#$%^&()+-={};',.[\]\\]/gmu)
-    .join('')
+const sanitizeUserDisplayname = require('./sanitize')
 
 module.exports = {
-  sanitize
+  sanitizeUserDisplayname
 }

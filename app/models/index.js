@@ -1,4 +1,5 @@
 const fs = require('fs')
+
 const modelsPath = `${__dirname}/`
 const { removeExtensionFromFile } = require('../middleware/utils')
 

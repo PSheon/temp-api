@@ -1,9 +1,10 @@
 const { matchedData } = require('express-validator')
-const model = require('../../models/user')
-const utils = require('../../middleware/utils')
+
+const { avatarProcessQueue } = require('../../../plugins/queue-manager/queues')
 const auth = require('../../middleware/auth')
 const db = require('../../middleware/db')
-const { avatarProcessQueue } = require('../../../plugins/queue-manager/queues')
+const utils = require('../../middleware/utils')
+const model = require('../../models/user')
 
 /*********************
  * Private functions *
@@ -73,7 +74,7 @@ const changePasswordInDB = async (id, req) => {
         if (err) {
           reject(utils.buildErrObject(422, error.message))
         }
-        resolve(utils.buildSuccObject('PASSWORD_CHANGED'))
+        resolve(utils.buildSuccObject('PASSWORD_UPDATED'))
       })
     })
   })

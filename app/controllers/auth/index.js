@@ -1,14 +1,15 @@
 const PROCESS_ENV = require('config')
-const jwt = require('jsonwebtoken')
-const User = require('../../models/user')
-const UserAccess = require('../../models/userAccess')
-const ForgotPassword = require('../../models/forgotPassword')
-const utils = require('../../middleware/utils')
-const uuid = require('uuid')
+
 const { addHours } = require('date-fns')
 const { matchedData } = require('express-validator')
-const auth = require('../../middleware/auth')
+const jwt = require('jsonwebtoken')
+const uuid = require('uuid')
+
+const auth = require('../../middleware/auth/d-ori')
 const emailer = require('../../middleware/emailer')
+const utils = require('../../middleware/utils')
+const ForgotPassword = require('../../models/forgotPassword')
+const User = require('../../models/user')
 const HOURS_TO_BLOCK = 2
 const LOGIN_ATTEMPTS = 5
 
@@ -295,7 +296,7 @@ const markResetPasswordAsUsed = async (req, forgot) => {
     forgot.countryChanged = utils.getCountry(req)
     forgot.save((err, item) => {
       utils.itemNotFound(err, item, reject, 'NOT_FOUND')
-      resolve(utils.buildSuccObject('PASSWORD_CHANGED'))
+      resolve(utils.buildSuccObject('PASSWORD_UPDATED'))
     })
   })
 }
@@ -349,13 +350,13 @@ const findUserToResetPassword = async (email) => {
 
 /**
  * Checks if a forgot password verification exists
- * @param {string} id - verification id
+ * @param {string} verification - verification
  */
-const findForgotPassword = async (id) => {
+const findForgotPassword = async (verification) => {
   return new Promise((resolve, reject) => {
     ForgotPassword.findOne(
       {
-        verification: id,
+        verification,
         used: false
       },
       (err, item) => {
@@ -556,7 +557,7 @@ exports.forgotPassword = async (req, res) => {
 exports.resetPassword = async (req, res) => {
   try {
     const data = matchedData(req)
-    const forgotPassword = await findForgotPassword(data._id)
+    const forgotPassword = await findForgotPassword(data.verification)
     const user = await findUserToResetPassword(forgotPassword.email)
     await updatePassword(data.password, user)
     const result = await markResetPasswordAsUsed(req, forgotPassword)
@@ -593,6 +594,7 @@ exports.getRefreshToken = async (req, res) => {
     let userId = await getUserIdFromToken(tokenEncrypted)
     userId = await utils.isIDGood(userId)
     const user = await findUserById(userId)
+    /* @ANCHOR */
     req.session.userId = user._id
     req.session.userMemberId = user.memberId
 

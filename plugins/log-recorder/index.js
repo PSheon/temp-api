@@ -1,8 +1,9 @@
-const ora = require('ora')
-const chalk = require('chalk')
 const path = require('path')
-const morgan = require('morgan')
+
+const chalk = require('chalk')
 const FileStreamRotator = require('file-stream-rotator')
+const morgan = require('morgan')
+const ora = require('ora')
 
 const MorganFileLogRecorder = (app) => {
   const spinner = new ora(

@@ -1,7 +1,7 @@
 const PROCESS_ENV = require('config')
 
-const ora = require('ora')
 const chalk = require('chalk')
+const ora = require('ora')
 const swaggerJsdoc = require('swagger-jsdoc')
 const swaggerUi = require('swagger-ui-express')
 

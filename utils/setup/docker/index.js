@@ -1,5 +1,5 @@
-const ora = require('ora')
 const chalk = require('chalk')
+const ora = require('ora')
 
 const { initDocker, startRedis, startMongo } = require('./helpers')
 

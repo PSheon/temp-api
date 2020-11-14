@@ -1,12 +1,12 @@
 const PROCESS_ENV = require('config')
 
-const ora = require('ora')
 const chalk = require('chalk')
-const getExpeditiousCache = require('express-expeditious')
 const engine = require('expeditious-engine-redis')({
   host: PROCESS_ENV.REDIS_HOST,
   port: PROCESS_ENV.REDIS_PORT
 })
+const getExpeditiousCache = require('express-expeditious')
+const ora = require('ora')
 
 const RedisCache = (app) => {
   const spinner = new ora(`設定 ${chalk.yellow('[Redis Cache]')} 中...`).start()

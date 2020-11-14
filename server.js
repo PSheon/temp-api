@@ -1,37 +1,36 @@
 const PROCESS_ENV = require('config')
-
-const express = require('express')
-const bodyParser = require('body-parser')
-const compression = require('compression')
-const helmet = require('helmet')
-const cors = require('cors')
-const passport = require('passport')
-const i18n = require('i18n')
+const http = require('http')
 const path = require('path')
 
-const setupBanner = require('./utils/setup/banner')
-const setupConfig = require('./utils/setup/config')
-const setupDirectory = require('./utils/setup/environment-directory')
-const setupDocker = require('./utils/setup/docker')
-const setupMongo = require('./utils/setup/mongo')
+const bodyParser = require('body-parser')
+const compression = require('compression')
+const cors = require('cors')
+const express = require('express')
+const helmet = require('helmet')
+const i18n = require('i18n')
+const passport = require('passport')
 
-const { SocketServer } = require('./plugins/socket-server')
 // TODO
-// const { AppManager } = require('./plugins/app-manager')
-// const { startApp } = require('./plugins/app-manager')
+// const { AppManager, startApp } = require('./plugins/app-manager')
 // const echoAppConnfig = require('./plugins/app-manager/echo-app-config')
-const { QueueManager } = require('./plugins/queue-manager')
-const { StatusMonitor } = require('./plugins/status-monitor')
 const {
   MorganFileLogRecorder,
   MorganConsoleLogger
 } = require('./plugins/log-recorder')
-const { SwaggerDocsUI } = require('./plugins/swagger-docs-ui')
+const { QueueManager } = require('./plugins/queue-manager')
 const { RedisCache } = require('./plugins/redis-cache')
 const { RedisSession } = require('./plugins/redis-session')
+const { SocketServer } = require('./plugins/socket-server')
+const { StatusMonitor } = require('./plugins/status-monitor')
+const { SwaggerDocsUI } = require('./plugins/swagger-docs-ui')
+const setupBanner = require('./utils/setup/banner')
+const setupConfig = require('./utils/setup/config')
+const setupDocker = require('./utils/setup/docker')
+const setupDirectory = require('./utils/setup/environment-directory')
+const setupMongo = require('./utils/setup/mongo')
 
 const app = express()
-const Server = require('http').createServer(app)
+const Server = http.createServer(app)
 
 /* --------------------------------------- */
 /*              Setup Project              */
@@ -105,9 +104,9 @@ app.use(
 )
 /* Internationalization */
 i18n.configure({
-  locales: ['en', 'es'],
+  locales: ['zh-tw', 'en'],
   directory: `${__dirname}/locales`,
-  defaultLocale: 'en',
+  defaultLocale: 'zh-tw',
   objectNotation: true
 })
 app.use(i18n.init)

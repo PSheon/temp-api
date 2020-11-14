@@ -1,21 +1,26 @@
 const PROCESS_ENV = require('config')
-const ora = require('ora')
+
 const chalk = require('chalk')
-const socketIo = require('socket.io')
 const jwt = require('jsonwebtoken')
-const validate = require('./helpers/validate')
-const auth = require('../../app/middleware/auth')
+const ora = require('ora')
+const socketIo = require('socket.io')
+
+// const auth = require('../../app/middleware/auth/d-ori')
 const User = require('../../app/models/user')
+
+const { validateConfig } = require('./helpers')
 
 const SocketServer = (config) => {
   const spinner = new ora('檢查即時連線...').start()
-  const validatedConfig = validate(config)
+  const validatedConfig = validateConfig(config)
   const io = socketIo(validatedConfig.server)
 
   if (validatedConfig.authorize) {
     io.use((socket, next) => {
       const token = socket.handshake.query.token
-      const JWT_TOKEN = auth.decrypt(token)
+      // @ANCHOR
+      // const JWT_TOKEN = auth.decrypt(token)
+      const JWT_TOKEN = token
 
       jwt.verify(JWT_TOKEN, PROCESS_ENV.JWT_SECRET, (jwtError, payload) => {
         if (jwtError) {

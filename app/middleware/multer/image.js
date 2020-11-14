@@ -1,7 +1,8 @@
-const multer = require('multer')
 const path = require('path')
+
 const mime = require('mime-types')
 const moment = require('moment')
+const multer = require('multer')
 const shortUUID = require('short-uuid')
 
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/svg+xml']
@@ -34,6 +35,7 @@ const fileFilter = (req, file, cb) => {
  * Avatar Uploader
  * @param null
  */
+// @ANCHOR
 module.exports = multer({
   storage,
   fileFilter,

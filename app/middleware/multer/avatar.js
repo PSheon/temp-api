@@ -1,16 +1,17 @@
-const multer = require('multer')
 const path = require('path')
+
 const mime = require('mime-types')
+const multer = require('multer')
 const randomize = require('randomatic')
 
-const { sanitize } = require('./helpers')
+const { sanitizeUserDisplayname } = require('./helpers')
 
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
     callback(null, path.resolve(__dirname, '../../../', 'uploads', 'temp'))
   },
   filename: (req, file, callback) => {
-    const newAvatarName = `${randomize('0', 7)}_${sanitize(
+    const newAvatarName = `${randomize('0', 7)}_${sanitizeUserDisplayname(
       'req-user displayName'
     )}.${mime.extension(file.mimetype)}`
     req.body.avatarName = newAvatarName

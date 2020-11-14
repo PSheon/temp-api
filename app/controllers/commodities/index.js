@@ -1,7 +1,8 @@
-const model = require('../../models/commodity')
 const { matchedData } = require('express-validator')
-const utils = require('../../middleware/utils')
+
 const db = require('../../middleware/db')
+const utils = require('../../middleware/utils')
+const model = require('../../models/commodity')
 
 /*********************
  * Private functions *
@@ -25,7 +26,8 @@ const commodityExists = (commodityId = '') => {
         if (item) {
           return reject(utils.buildErrObject(422, 'COMMODITY_ALREADY_EXISTS'))
         }
-        resolve(false)
+
+        return resolve(false)
       }
     )
   })

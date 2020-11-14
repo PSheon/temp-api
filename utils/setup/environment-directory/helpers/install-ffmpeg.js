@@ -1,5 +1,6 @@
-const ffbinaries = require('ffbinaries')
 const path = require('path')
+
+const ffbinaries = require('ffbinaries')
 
 module.exports = (baseDirName) => {
   const platform = ffbinaries.detectPlatform()

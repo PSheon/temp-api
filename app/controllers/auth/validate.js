@@ -1,5 +1,6 @@
-const { validationResult } = require('../../middleware/utils')
 const { check } = require('express-validator')
+
+const { validationResult } = require('../../middleware/utils')
 
 /**
  * Validates register request
@@ -99,7 +100,7 @@ exports.forgotPassword = [
  * Validates reset password request
  */
 exports.resetPassword = [
-  check('_id')
+  check('verification')
     .exists()
     .withMessage('MISSING')
     .not()

@@ -1,5 +1,6 @@
 const { matchedData } = require('express-validator')
-const utils = require('../../middleware/utils')
+
+const { AppAction } = require('../../../constants/app-manager')
 const {
   getList,
   getApp,
@@ -9,7 +10,7 @@ const {
   reloadApp,
   restartApp
 } = require('../../../plugins/app-manager')
-const { AppAction } = require('../../../types/app-manager')
+const utils = require('../../middleware/utils')
 
 /*********************
  * Private functions *

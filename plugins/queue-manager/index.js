@@ -1,7 +1,7 @@
-const ora = require('ora')
-const chalk = require('chalk')
 const { setQueues } = require('bull-board')
 const { UI: BullBoardUI } = require('bull-board')
+const chalk = require('chalk')
+const ora = require('ora')
 
 const {
   echoAppQueue,

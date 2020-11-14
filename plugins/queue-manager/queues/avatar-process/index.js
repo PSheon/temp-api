@@ -1,5 +1,6 @@
-const Queue = require('bull')
 const path = require('path')
+
+const Queue = require('bull')
 const sharp = require('sharp')
 
 const avatarProcessQueue = new Queue('Avatar Process')

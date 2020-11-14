@@ -1,5 +1,12 @@
 const UserAccess = require('../../models/userAccess')
-const utils = require('../../middleware/utils')
+const {
+  getIP,
+  getBrowserInfo,
+  getCountry,
+  getMethod,
+  getPathname,
+  buildErrObject
+} = require('../utils')
 // const helpers = require('./helpers')
 
 module.exports = {
@@ -10,14 +17,16 @@ module.exports = {
   async saveUserAccess(req) {
     return new Promise((resolve, reject) => {
       const userId = req.session.userId
+      console.log('userId, ', userId)
       const userMemberId = req.session.userMemberId
+      console.log('userMemberId, ', userMemberId)
 
       const userAccess = new UserAccess({
-        ip: utils.getIP(req),
-        browser: utils.getBrowserInfo(req),
-        country: utils.getCountry(req),
-        method: utils.getMethod(req),
-        pathname: utils.getPathname(req)
+        ip: getIP(req),
+        browser: getBrowserInfo(req),
+        country: getCountry(req),
+        method: getMethod(req),
+        pathname: getPathname(req)
       })
       if (userId) {
         userAccess.set('user', userId)
@@ -28,7 +37,7 @@ module.exports = {
 
       userAccess.save((err) => {
         if (err) {
-          reject(utils.buildErrObject(422, err.message))
+          reject(buildErrObject(422, err.message))
         }
 
         resolve()

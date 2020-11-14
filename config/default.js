@@ -2,10 +2,11 @@ module.exports = {
   /* API 端口 */
   API_PORT: 3000,
   FRONTEND_URL: 'http://localhost:8080',
+  BACKEND_URL: 'http://localhost:3000',
 
   /* Session 密鑰，開啟 Redis 快取後使用 Redis，否則使用本地文件 */
-  SESSION_SECRET: 'MyUltraSecurePassWordIWontForgetToChange',
   ENABLE_REDIS_SESSION_CACHE: true,
+  SESSION_SECRET: 'MyUltraSecurePassWordIWontForgetToChange',
 
   /* API 密鑰，預設 3 天過期 */
   JWT_SECRET: 'MyUltraSecurePassWordIWontForgetToChange',
@@ -20,15 +21,19 @@ module.exports = {
   /* API 狀態監控器 */
   ENABLE_STATUS_MONITOR: true,
   STATUS_MONITOR_CONFIG: {
+    path: '/',
+    socketPath: '/socket.io',
+    ignoreStartsWith: '/admin',
     healthChecks: [
       {
         method: 'GET',
         protocol: 'http',
         host: 'localhost',
-        port: '3000',
-        path: '/api/api-docs'
+        port: 3000,
+        path: '/api-docs'
       }
-    ]
+    ],
+    healthChecksInterval: 300
   },
 
   /* API 日誌紀錄 */
@@ -48,7 +53,7 @@ module.exports = {
     }
   },
 
-  /* 認證信件設定 */
+  /* Mailgun 認證信件設定 */
   EMAIL_FROM_NAME: 'My Project',
   EMAIL_FROM_ADDRESS: 'info@myproject.com',
   EMAIL_SMTP_DOMAIN_MAILGUN: 'myproject.com',

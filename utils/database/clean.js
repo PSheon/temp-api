@@ -1,9 +1,11 @@
-const ora = require('ora')
-const chalk = require('chalk')
-const setupMongo = require('../setup/mongo')
-const path = require('path')
 const fs = require('fs')
+const path = require('path')
+
+const chalk = require('chalk')
+const ora = require('ora')
+
 const { removeExtensionFromFile } = require('../../app/middleware/utils')
+const setupMongo = require('../setup/mongo')
 const modelsPath = path.resolve(__dirname, '..', '../', 'app', 'models')
 
 setupMongo()

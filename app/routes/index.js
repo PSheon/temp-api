@@ -1,8 +1,11 @@
-const express = require('express')
-const router = express.Router()
 const fs = require('fs')
-const { getMethod, removeExtensionFromFile } = require('../middleware/utils')
+
+const express = require('express')
+
+const router = express.Router()
+
 const { saveUserAccess } = require('../middleware/logger')
+const { getMethod, removeExtensionFromFile } = require('../middleware/utils')
 const routesPath = `${__dirname}/`
 
 /*

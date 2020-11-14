@@ -1,7 +1,8 @@
-const model = require('../../models/user')
 const { matchedData } = require('express-validator')
-const utils = require('../../middleware/utils')
+
 const db = require('../../middleware/db')
+const utils = require('../../middleware/utils')
+const model = require('../../models/userAccess')
 
 /*********************
  * Private functions *
@@ -40,7 +41,8 @@ exports.getItem = async (req, res) => {
 exports.getItems = async (req, res) => {
   try {
     const query = await db.checkQueryString(req.query)
-    res.status(200).json(await db.getItems(req, model, query))
+    const populate = { path: 'user', select: '-_id -createdAt' }
+    res.status(200).json(await db.getItems({ ...req, populate }, model, query))
   } catch (error) {
     utils.handleError(res, error)
   }

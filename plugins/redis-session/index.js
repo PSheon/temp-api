@@ -1,12 +1,13 @@
 const PROCESS_ENV = require('config')
 
-const ora = require('ora')
 const chalk = require('chalk')
+const connectRedis = require('connect-redis')
 const session = require('express-session')
-const RedisStore = require('connect-redis')(session)
+const ora = require('ora')
 const redis = require('redis')
 
 const redisClient = redis.createClient()
+const RedisStore = connectRedis(session)
 
 const RedisSession = (app) => {
   const spinner = new ora(

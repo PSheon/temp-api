@@ -1,10 +1,11 @@
 const PROCESS_ENV = require('config')
-const ora = require('ora')
-const chalk = require('chalk')
 const fs = require('fs')
 const path = require('path')
 
-const installFFMPEG = require('./helpers/install-ffmpeg')
+const chalk = require('chalk')
+const ora = require('ora')
+
+// const { installFFMPEG } = require('./helpers')
 
 /* eslint max-statements: ["error", 25] */
 /* eslint complexity: ["error", 15] */
@@ -16,14 +17,14 @@ module.exports = () => {
   if (!fs.existsSync(path.join(baseDirName, 'ffmpeg'))) {
     fs.mkdirSync(path.join(baseDirName, 'ffmpeg'))
   }
-  if (!fs.existsSync(path.join(baseDirName, 'ffmpeg', 'ffmpeg'))) {
-    console.log(`安裝 'ffmpeg'`)
-    installFFMPEG(baseDirName)
-  }
-  if (!fs.existsSync(path.join(baseDirName, 'ffmpeg', 'ffprobe'))) {
-    console.log(`安裝 'ffprobe'`)
-    installFFMPEG(baseDirName)
-  }
+  // if (!fs.existsSync(path.join(baseDirName, 'ffmpeg', 'ffmpeg'))) {
+  //   console.log(`安裝 'ffmpeg'`)
+  //   installFFMPEG(baseDirName)
+  // }
+  // if (!fs.existsSync(path.join(baseDirName, 'ffmpeg', 'ffprobe'))) {
+  //   console.log(`安裝 'ffprobe'`)
+  //   installFFMPEG(baseDirName)
+  // }
 
   /* 圖片ｌ音樂 上傳路徑 */
   if (!fs.existsSync(path.join(baseDirName, 'uploads'))) {

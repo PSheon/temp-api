@@ -1,9 +1,11 @@
 /* eslint max-statements: ["error", 20]*/
-const pidusage = require('pidusage')
 const os = require('os')
 const v8 = require('v8')
-const sendMetrics = require('./send-metrics')
+
 const debug = require('debug')('status-monitor')
+const pidusage = require('pidusage')
+
+const sendMetrics = require('./send-metrics')
 
 let eventLoopStats // eslint-disable-line
 

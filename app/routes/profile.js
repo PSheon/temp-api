@@ -1,15 +1,17 @@
+const express = require('express')
+const passport = require('passport')
+const trimRequest = require('trim-request')
+
+const AuthController = require('../controllers/auth')
 const controller = require('../controllers/profile')
 const validate = require('../controllers/profile/validate')
-const AuthController = require('../controllers/auth')
-const express = require('express')
 const avatarUploader = require('../middleware/multer/avatar')
+
 const router = express.Router()
 require('../../utils/setup/passport')
-const passport = require('passport')
 const requireAuth = passport.authenticate('jwt', {
   session: false
 })
-const trimRequest = require('trim-request')
 
 /*
  * Profile routes

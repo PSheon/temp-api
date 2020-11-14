@@ -1,8 +1,8 @@
-const Docker = require('dockerode')
 const chalk = require('chalk')
+const Docker = require('dockerode')
 
-const startRedis = require('./redis')
 const startMongo = require('./mongo')
+const startRedis = require('./redis')
 const stopContainer = require('./stop-container')
 
 const docker = new Docker()

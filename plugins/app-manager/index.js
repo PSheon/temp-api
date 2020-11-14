@@ -1,5 +1,6 @@
-const ora = require('ora')
 const chalk = require('chalk')
+const ora = require('ora')
+
 // TODO
 const {
   getList,
@@ -19,9 +20,9 @@ const AppManager = (app) => {
   ).start()
 
   // TODO
-  // app.use('/app-manager', (req, res, next) => {
-  //   next()
-  // })
+  app.use('/app-manager', (req, res, next) => {
+    next()
+  })
 
   spinner.succeed(`${chalk.yellow('[APP Message Queue Manager]')} 已啟用`)
 }

@@ -1,8 +1,9 @@
 const PROCESS_ENV = require('config')
-const ora = require('ora')
+const path = require('path')
+
 const chalk = require('chalk')
 const { Seeder } = require('mongo-seeding')
-const path = require('path')
+const ora = require('ora')
 const config = {
   database: PROCESS_ENV.MONGO_URI,
   inputPath: path.resolve(__dirname, 'utils', 'database', 'data'),

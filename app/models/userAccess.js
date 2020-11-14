@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
-const validator = require('validator')
 const mongoosePaginate = require('mongoose-paginate-v2')
+const validator = require('validator')
 
 const UserAccessSchema = new mongoose.Schema(
   {

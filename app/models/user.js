@@ -1,7 +1,7 @@
-const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
-const validator = require('validator')
+const mongoose = require('mongoose')
 const mongoosePaginate = require('mongoose-paginate-v2')
+const validator = require('validator')
 
 const mobilePhoneValidator = (phone) =>
   validator.isMobilePhone(phone, ['zh-TW'], { strictMode: true })
@@ -62,8 +62,8 @@ const UserSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['trial', 'user', 'staff', 'admin'],
-      default: 'trial'
+      enum: ['user', 'staff', 'admin'],
+      default: 'user'
     },
 
     /* Third Party Login */
@@ -121,9 +121,9 @@ const UserSchema = new mongoose.Schema(
 
     /* Referrals */
     level: {
-      type: Number,
-      enum: [1, 2, 3],
-      default: 1
+      type: String,
+      enum: ['silver', 'gold', 'diamond'],
+      default: 'silver'
     },
     points: {
       type: Number,

@@ -1,9 +1,10 @@
-const model = require('../../models/user')
-const uuid = require('uuid')
 const { matchedData } = require('express-validator')
-const utils = require('../../middleware/utils')
+const uuid = require('uuid')
+
 const db = require('../../middleware/db')
 const emailer = require('../../middleware/emailer')
+const utils = require('../../middleware/utils')
+const model = require('../../models/user')
 
 /*********************
  * Private functions *

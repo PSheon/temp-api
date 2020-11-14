@@ -1,17 +1,18 @@
 {
+  "parser": "babel-eslint",
+
   "env": {
     "node": true,
-    "mocha": true
-  },
-
-  "parserOptions": {
-    "ecmaVersion": 9
+    "mocha": true,
+    "es6": true
   },
 
   "globals": {
     "Promise": true,
     "_": true,
-    "async": true
+    "async": true,
+    "expect": true,
+    "jest": true
   },
 
   "rules": {
@@ -52,7 +53,7 @@
     "new-cap": ["off"],
     "consistent-this": ["error", "that"],
     "no-unused-vars": [
-      "warn",
+      "error",
       {
         "caughtErrors": "all",
         "caughtErrorsIgnorePattern": "^unused($|[A-Z].*$)"
@@ -80,7 +81,6 @@
         "allowTemplateLiterals": true
       }
     ],
-    "semi": ["error", "never"],
     "semi-spacing": [
       "warn",
       {
@@ -90,10 +90,32 @@
     ],
     "semi-style": ["warn", "last"],
     "space-before-function-paren": ["off", 2],
-    "prettier/prettier": "error"
+    "prettier/prettier": "error",
+    "import/order": [
+      "error",
+      {
+        "pathGroups": [
+          {
+            "pattern": "config",
+            "group": "builtin"
+          },
+          {
+            "pattern": "**helpers**",
+            "group": "builtin",
+            "position": "after"
+          }
+        ],
+        "pathGroupsExcludedImportTypes": ["builtin"],
+        "newlines-between": "always",
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ]
   },
   "extends": [
-    "formidable/rules/eslint/best-practices/on",
+    "formidable/rules/eslint/best-practices/off",
     "formidable/rules/eslint/es6/on",
     "formidable/rules/eslint/errors/off",
     "formidable/rules/eslint/strict/on",
@@ -102,5 +124,5 @@
     "formidable/rules/eslint/variables/on",
     "prettier"
   ],
-  "plugins": ["prettier"]
+  "plugins": ["prettier", "import"]
 }

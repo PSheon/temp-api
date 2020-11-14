@@ -1,18 +1,26 @@
 const faker = require('faker')
 const ObjectID = require('mongodb').ObjectID
 
-module.exports = [
+const users = [
   {
-    _id: new ObjectID('5aa1c2c35ef7a4e97b5e995a'),
+    _id: new ObjectID('5faf82f3a279e8d89983ee45'),
     memberId: 'admin',
-    email: 'admin@admin.com',
-    password: '$2b$05$WTenUip3OzmOc4r1fmTuseI/ftET7.e6aXAv6cI784NqoNKXdV1MO',
+    email: 'admin@gmail.com',
+    password: '$2b$05$f98AOqu4IQ2De6StoBrnOuYnk0tCNPuUhwACU7ivi8/ZlTHqIbenu',
     role: 'admin',
     google: null,
     displayName: '超級管理員',
     photoURL: 'assets/images/avatars/admin.png',
+    secondaryEmail: 'admin@gmail.com',
     phone: '+886987654321',
     shortcuts: ['bot-setting', 'market', 'leader-board', 'referrals'],
+    settings: {
+      currency: 'TWD',
+      theme: 'dark',
+      notification: true
+    },
+    level: 'diamond',
+    points: 1000,
     referralParent: '',
     referralChildList: [],
     lastPasswordUpdatedAt: faker.date.past(),
@@ -25,20 +33,28 @@ module.exports = [
     updatedAt: faker.date.recent()
   },
   {
-    _id: new ObjectID('5aa1c2c35ef7a4e97b5e995b'),
+    _id: new ObjectID('5faf82f3a279e8d89983ee46'),
     memberId: 'staff',
-    email: 'staff@staff.com',
-    password: '$2b$05$WTenUip3OzmOc4r1fmTuseI/ftET7.e6aXAv6cI784NqoNKXdV1MO',
+    email: 'staff@gmail.com',
+    password: '$2b$05$f98AOqu4IQ2De6StoBrnOuYnk0tCNPuUhwACU7ivi8/ZlTHqIbenu',
     role: 'staff',
     google: null,
     displayName: '管理員',
     photoURL: 'assets/images/avatars/staff.png',
-    phone: '+886876543219',
+    secondaryEmail: 'staff@gmail.com',
+    phone: '+886987654321',
     shortcuts: ['bot-setting', 'market', 'leader-board', 'referrals'],
+    settings: {
+      currency: 'TWD',
+      theme: 'dark',
+      notification: true
+    },
+    level: 'gold',
+    points: 1000,
     referralParent: '',
     referralChildList: [],
     lastPasswordUpdatedAt: faker.date.past(),
-    verification: '3d6e072c-0eaf-4239-bb5e-495e6486148e',
+    verification: '3d6e072c-0eaf-4239-bb5e-495e6486148f',
     verified: true,
     loginAttempts: 0,
     blockExpires: faker.date.past(),
@@ -47,20 +63,28 @@ module.exports = [
     updatedAt: faker.date.recent()
   },
   {
-    _id: new ObjectID('5aa1c2c35ef7a4e97b5e995c'),
+    _id: new ObjectID('5faf82f3a279e8d89983ee47'),
     memberId: 'user',
-    email: 'user@user.com',
-    password: '$2b$05$WTenUip3OzmOc4r1fmTuseI/ftET7.e6aXAv6cI784NqoNKXdV1MO',
+    email: 'user@gmail.com',
+    password: '$2b$05$f98AOqu4IQ2De6StoBrnOuYnk0tCNPuUhwACU7ivi8/ZlTHqIbenu',
     role: 'user',
     google: null,
     displayName: '會員',
-    photoURL: 'assets/images/avatars/default.png',
-    phone: '+886876543212',
+    photoURL: 'assets/images/avatars/user.png',
+    secondaryEmail: 'user@gmail.com',
+    phone: '+886987654321',
     shortcuts: ['bot-setting', 'market', 'leader-board', 'referrals'],
+    settings: {
+      currency: 'TWD',
+      theme: 'dark',
+      notification: true
+    },
+    level: 'silver',
+    points: 1000,
     referralParent: '',
     referralChildList: [],
     lastPasswordUpdatedAt: faker.date.past(),
-    verification: '3d6e072c-0eaf-4239-bb5e-495e6486148s',
+    verification: '3d6e072c-0eaf-4239-bb5e-495e6486148f',
     verified: true,
     loginAttempts: 0,
     blockExpires: faker.date.past(),
@@ -69,20 +93,28 @@ module.exports = [
     updatedAt: faker.date.recent()
   },
   {
-    _id: new ObjectID('5aa1c2c35ef7a4e97b5e995d'),
-    memberId: 'trial',
-    email: 'trial@trial.com',
-    password: '$2b$05$WTenUip3OzmOc4r1fmTuseI/ftET7.e6aXAv6cI784NqoNKXdV1MO',
-    role: 'trial',
+    _id: new ObjectID('5faf82f3a279e8d89983ee48'),
+    memberId: 'demo',
+    email: 'demo@gmail.com',
+    password: '$2b$05$f98AOqu4IQ2De6StoBrnOuYnk0tCNPuUhwACU7ivi8/ZlTHqIbenu',
+    role: 'demo',
     google: null,
-    displayName: '體驗會員',
-    photoURL: 'assets/images/avatars/default.png',
-    phone: '+886876543219',
+    displayName: '會員',
+    photoURL: 'assets/images/avatars/user.png',
+    secondaryEmail: 'demo@gmail.com',
+    phone: '+886987654321',
     shortcuts: ['bot-setting', 'market', 'leader-board', 'referrals'],
+    settings: {
+      currency: 'TWD',
+      theme: 'dark',
+      notification: true
+    },
+    level: 'silver',
+    points: 1000,
     referralParent: '',
     referralChildList: [],
     lastPasswordUpdatedAt: faker.date.past(),
-    verification: '3d6e072c-0eaf-4239-bb5e-495e64861481',
+    verification: '3d6e072c-0eaf-4239-bb5e-495e6486148f',
     verified: true,
     loginAttempts: 0,
     blockExpires: faker.date.past(),
@@ -91,3 +123,5 @@ module.exports = [
     updatedAt: faker.date.recent()
   }
 ]
+
+module.exports = users
