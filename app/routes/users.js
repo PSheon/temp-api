@@ -1,16 +1,28 @@
 const express = require('express')
 const passport = require('passport')
 const trimRequest = require('trim-request')
-
-const AuthController = require('../controllers/auth')
-const controller = require('../controllers/users')
-const validate = require('../controllers/users/validate')
-
-const router = express.Router()
-require('../../utils/setup/passport')
 const requireAuth = passport.authenticate('jwt', {
   session: false
 })
+
+const { roleAuthorization } = require('../controllers/auth')
+const {
+  getUsers,
+  getUser,
+  updateUser,
+  deleteUser,
+  updateUserPasswordOnself
+} = require('../controllers/users')
+const {
+  validateGetUser,
+  validateUpdateUser,
+  validateUpdateUserRole,
+  validateDeleteUser,
+  validateUpdatePassword
+} = require('../controllers/users/validators')
+require('../../utils/setup/passport')
+
+const router = express.Router()
 
 /*
  * Users routes
@@ -22,10 +34,10 @@ const requireAuth = passport.authenticate('jwt', {
 router.get(
   '/:_id',
   requireAuth,
-  AuthController.roleAuthorization(['staff', 'admin']),
+  roleAuthorization(['staff', 'admin']),
   trimRequest.all,
-  validate.getItem,
-  controller.getItem
+  validateGetUser,
+  getUser
 )
 
 /*
@@ -34,9 +46,9 @@ router.get(
 router.get(
   '/',
   requireAuth,
-  AuthController.roleAuthorization(['staff', 'admin']),
+  roleAuthorization(['staff', 'admin']),
   trimRequest.all,
-  controller.getItems
+  getUsers
 )
 
 /*
@@ -45,10 +57,10 @@ router.get(
 // router.post(
 //   '/',
 //   requireAuth,
-//   AuthController.roleAuthorization(['admin']),
+//   roleAuthorization(['admin']),
 //   trimRequest.all,
-//   validate.createItem,
-//   controller.createItem
+//   validateCreateUser,
+//   createUser
 // )
 
 /*
@@ -57,10 +69,34 @@ router.get(
 router.patch(
   '/:_id',
   requireAuth,
-  AuthController.roleAuthorization(['staff', 'admin']),
+  roleAuthorization(['staff', 'admin']),
   trimRequest.all,
-  validate.updateItem,
-  controller.updateItem
+  validateUpdateUser,
+  updateUser
+)
+
+/*
+ * Update User's role route
+ */
+router.patch(
+  '/:_id/role',
+  requireAuth,
+  roleAuthorization(['admin']),
+  trimRequest.all,
+  validateUpdateUserRole,
+  updateUser
+)
+
+/*
+ * Update onself password route
+ */
+router.patch(
+  '/me/password',
+  requireAuth,
+  roleAuthorization(['user', 'staff', 'admin']),
+  trimRequest.all,
+  validateUpdatePassword,
+  updateUserPasswordOnself
 )
 
 /*
@@ -69,10 +105,10 @@ router.patch(
 router.delete(
   '/:_id',
   requireAuth,
-  AuthController.roleAuthorization(['admin']),
+  roleAuthorization(['admin']),
   trimRequest.all,
-  validate.deleteItem,
-  controller.deleteItem
+  validateDeleteUser,
+  deleteUser
 )
 
 module.exports = router

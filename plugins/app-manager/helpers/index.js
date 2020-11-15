@@ -3,7 +3,7 @@ const _fs = require('fs')
 const bluebird = require('bluebird')
 const pm = require('pm2')
 
-const TYPES = require('../../../constants/app-manager')
+const CONSTANTS = require('../../../constants/app-manager')
 const fs = bluebird.promisifyAll(_fs)
 
 const getList = () =>
@@ -24,7 +24,7 @@ const getApp = async (name) => {
 
     apps.push(app)
 
-    if (app.pm2_env.exec_mode !== TYPES.ExecMode.CLUSTER) {
+    if (app.pm2_env.exec_mode !== CONSTANTS.ExecMode.CLUSTER) {
       break
     }
   }

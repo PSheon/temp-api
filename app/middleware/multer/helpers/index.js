@@ -1,4 +1,4 @@
-const sanitizeUserDisplayname = require('./sanitize')
+const { sanitizeUserDisplayname } = require('./sanitize')
 
 module.exports = {
   sanitizeUserDisplayname

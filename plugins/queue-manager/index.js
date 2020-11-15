@@ -3,16 +3,12 @@ const { UI: BullBoardUI } = require('bull-board')
 const chalk = require('chalk')
 const ora = require('ora')
 
-const {
-  echoAppQueue,
-  imageProcessQueue,
-  avatarProcessQueue
-} = require('./queues')
+const { echoAppQueue, avatarProcessQueue } = require('../../app/queues')
 
 const QueueManager = (app) => {
   const spinner = new ora(`設定 ${chalk.yellow('[App Queue]')} 中...`).start()
 
-  setQueues([echoAppQueue, imageProcessQueue, avatarProcessQueue])
+  setQueues([echoAppQueue, avatarProcessQueue])
 
   app.use('/queue-dashboard', BullBoardUI)
 

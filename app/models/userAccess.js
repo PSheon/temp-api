@@ -36,6 +36,10 @@ const UserAccessSchema = new mongoose.Schema(
     pathname: {
       type: String,
       required: true
+    },
+    hightlight: {
+      type: Boolean,
+      default: false
     }
   },
   {

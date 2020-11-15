@@ -36,11 +36,15 @@ module.exports = {
       }
 
       userAccess.save((err) => {
-        if (err) {
-          reject(buildErrObject(422, err.message))
-        }
+        try {
+          if (err) {
+            return reject(buildErrObject(422, err.message))
+          }
 
-        resolve()
+          resolve()
+        } catch (error) {
+          reject(error)
+        }
       })
     })
   }

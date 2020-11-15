@@ -11,6 +11,9 @@
       "protocol": "inspector",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
+      "env": {
+        "NODE_ENV": "development"
+      },
       "port": 9230
     },
     {
@@ -21,6 +24,7 @@
       "skipFiles": ["<node_internals>/**"],
       "type": "node",
       "env": {
+        "NODE_ENV": "test",
         "PORT": "3111"
       }
     },
@@ -36,6 +40,9 @@
         "--config=jest.config.js",
         "${file}"
       ],
+      "env": {
+        "NODE_ENV": "test"
+      },
       "port": 9231
     }
   ]

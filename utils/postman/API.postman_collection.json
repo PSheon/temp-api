@@ -1,0 +1,930 @@
+{
+	"info": {
+		"_postman_id": "8bd0cf52-09d2-4179-9e46-fee14fd4c71b",
+		"name": "Loan API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "Login account.",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bbce1457-74f8-4b46-9b2e-2d2b632bfb8c",
+								"exec": [
+									"var data = pm.response.json();",
+									"",
+									"if (data.token) {",
+									"    pm.environment.set(\"JWT_AUTH_TOKEN\", data.token);",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "pauljiang61020@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "!@Admin123456",
+									"type": "text"
+								}
+							],
+							"options": {
+								"urlencoded": {}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/auth/login",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh token.",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7e93d01a-66dd-457b-bac3-46ac1787468c",
+								"exec": [
+									"var data = pm.response.json();\r",
+									"\r",
+									"if (data.token) {\r",
+									"    pm.environment.set(\"JWT_AUTH_TOKEN\", data.token);\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "token",
+									"value": "{{JWT_AUTH_TOKEN}}",
+									"type": "text"
+								}
+							],
+							"options": {
+								"urlencoded": {}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/auth/access-token",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"auth",
+								"access-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register account.",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "97c87b63-f50d-4fb8-93b8-16b6edc0ec8c",
+								"exec": [
+									"var data = pm.response.json();",
+									"",
+									"if (data.token) {",
+									"    pm.environment.set(\"JWT_AUTH_TOKEN\", data.token);",
+									"}",
+									"if (data.user && data.user.verification) {",
+									"    pm.environment.set(\"VERIFY_VERIFICATION\", data.user.verification);",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "memberId",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "pauljiang61020@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "!@Admin123456",
+									"type": "text"
+								}
+							],
+							"options": {
+								"urlencoded": {}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/auth/register",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify email address.",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f9d1dd76-d89a-4aae-9c68-9d9d028f75e0",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "verification",
+									"value": "{{VERIFY_VERIFICATION}}",
+									"type": "text"
+								},
+								{
+									"key": "verification",
+									"value": "dd053548-722b-4d83-bfba-7bf58fe22e23",
+									"type": "text",
+									"disabled": true
+								}
+							],
+							"options": {
+								"urlencoded": {}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/auth/verify-email",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"auth",
+								"verify-email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Request forgot password.",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "507a3d1c-0616-453c-b0b2-29933a3e2259",
+								"exec": [
+									"var data = pm.response.json();\r",
+									"\r",
+									"if (data.verification) {\r",
+									"    pm.environment.set(\"RESET_PASSWORD_VERIFICATION\", data.verification);\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "zh-tw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "pauljiang61020@gmail.com",
+									"type": "text"
+								}
+							],
+							"options": {
+								"urlencoded": {}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/auth/forgot-password",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"auth",
+								"forgot-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset password.",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "verification",
+									"value": "{{RESET_PASSWORD_VERIFICATION}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "!@Admin123456",
+									"type": "text"
+								}
+							],
+							"options": {
+								"urlencoded": {}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/auth/reset-password",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"auth",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout account.",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/auth/logout",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "accesses",
+			"item": [
+				{
+					"name": "Get latest 20 accesses.",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/api/accesses?filter=&fields=memberId,ip&page=1&limit=20&sort=memberId&order=-1",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"accesses"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": ""
+								},
+								{
+									"key": "fields",
+									"value": "memberId,ip"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "sort",
+									"value": "memberId"
+								},
+								{
+									"key": "order",
+									"value": "-1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get access.",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/api/accesses/:_id",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"accesses",
+								":_id"
+							],
+							"variable": [
+								{
+									"key": "_id",
+									"value": "5faf8c4da279e8d89983ee46"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update access.",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "hightlight",
+									"value": "true",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/accesses/:_id",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"accesses",
+								":_id"
+							],
+							"variable": [
+								{
+									"key": "_id",
+									"value": "5faf8c4da279e8d89983ee46"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[IN PROG] Delete access.",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/api/accesses/:_id",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"accesses",
+								":_id"
+							],
+							"variable": [
+								{
+									"key": "_id",
+									"value": "5faf8c4da279e8d89983ee46"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "Get latest 20 users.",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/api/users?filter=&fields=displayName,email&page=1&limit=20&sort=displayName&order=-1",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": ""
+								},
+								{
+									"key": "fields",
+									"value": "displayName,email"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "sort",
+									"value": "displayName"
+								},
+								{
+									"key": "order",
+									"value": "-1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user.",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/api/users/:_id",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"users",
+								":_id"
+							],
+							"variable": [
+								{
+									"key": "_id",
+									"value": "5fb118bcaccedc748d1fe89b"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user.",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "displayName",
+									"value": "paul j",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/users/:_id",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"users",
+								":_id"
+							],
+							"variable": [
+								{
+									"key": "_id",
+									"value": "5fb118bcaccedc748d1fe89b"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user's role.",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "role",
+									"value": "admin",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/users/:_id/role",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"users",
+								":_id",
+								"role"
+							],
+							"variable": [
+								{
+									"key": "_id",
+									"value": "5fb118bcaccedc748d1fe89b"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update self password.",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "oldPassword",
+									"value": "!@Admin123456",
+									"type": "text"
+								},
+								{
+									"key": "newPassword",
+									"value": "!@Admin123456",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/users/me/password",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"me",
+								"password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[IN PROG] Delete user.",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/api/users/:_id",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"users",
+								":_id"
+							],
+							"variable": [
+								{
+									"key": "_id",
+									"value": "5faf82f3a279e8d89983ee45"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "commodities",
+			"item": [
+				{
+					"name": "Get latest 20 commodities.",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/api/commodities?filter=&fields=displayName,codeName&page=1&limit=20&sort=displayName&order=-1",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"commodities"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": ""
+								},
+								{
+									"key": "fields",
+									"value": "displayName,codeName"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "sort",
+									"value": "displayName"
+								},
+								{
+									"key": "order",
+									"value": "-1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[IN PROG] Get commodity.",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/api/commodities/:_id",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"commodities",
+								":_id"
+							],
+							"variable": [
+								{
+									"key": "_id",
+									"value": "5faf82f3a279e8d89983ee45"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

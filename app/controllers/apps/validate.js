@@ -1,6 +1,6 @@
 const { check } = require('express-validator')
 
-const TYPES = require('../../../constants/app-manager')
+const CONSTANTS = require('../../../constants/app-manager')
 const { validationResult } = require('../../middleware/utils')
 
 /**
@@ -28,7 +28,7 @@ exports.updateItem = [
     .withMessage('MISSING')
     .not()
     .isEmpty()
-    .isIn(Object.values(TYPES.AppAction))
+    .isIn(Object.values(CONSTANTS.AppAction))
     .withMessage('IS_EMPTY'),
   check('appId')
     .exists()

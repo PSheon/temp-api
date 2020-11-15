@@ -16,8 +16,6 @@ const storage = multer.diskStorage({
     )}.${mime.extension(file.mimetype)}`
     req.body.avatarName = newAvatarName
 
-    console.log('avatarName, ', newAvatarName)
-
     callback(null, newAvatarName)
   }
 })

@@ -1,16 +1,31 @@
 const express = require('express')
 const passport = require('passport')
 const trimRequest = require('trim-request')
-
-const controller = require('../controllers/auth')
-const AuthController = require('../controllers/auth')
-const validate = require('../controllers/auth/validate')
-
-const router = express.Router()
-require('../../utils/setup/passport')
 const requireAuth = passport.authenticate('jwt', {
   session: false
 })
+
+const {
+  register,
+  verifyEmail,
+  login,
+  forgotPassword,
+  resetPassword,
+  getRefreshToken,
+  roleAuthorization,
+  logout
+} = require('../controllers/auth')
+const {
+  validateRegister,
+  validateVerifyEmail,
+  validateGetRefreshToken,
+  validateForgotPassword,
+  validateResetPassword,
+  validateLogin
+} = require('../controllers/auth/validators')
+require('../../utils/setup/passport')
+
+const router = express.Router()
 
 /*
  * Auth routes
@@ -19,27 +34,29 @@ const requireAuth = passport.authenticate('jwt', {
 /*
  * Login route
  */
-router.post('/login', trimRequest.all, validate.login, controller.login)
+router.post('/login', trimRequest.all, validateLogin, login)
+
+/*
+ * Get new refresh token
+ */
+router.post(
+  '/access-token',
+  requireAuth,
+  roleAuthorization(['user', 'staff', 'admin']),
+  trimRequest.all,
+  validateGetRefreshToken,
+  getRefreshToken
+)
 
 /*
  * Register route
  */
-router.post(
-  '/register',
-  trimRequest.all,
-  validate.register,
-  controller.register
-)
+router.post('/register', trimRequest.all, validateRegister, register)
 
 /*
  * Verify route
  */
-router.post(
-  '/verify-email',
-  trimRequest.all,
-  validate.verify,
-  controller.verify
-)
+router.post('/verify-email', trimRequest.all, validateVerifyEmail, verifyEmail)
 
 /*
  * Forgot password route
@@ -47,8 +64,8 @@ router.post(
 router.post(
   '/forgot-password',
   trimRequest.all,
-  validate.forgotPassword,
-  controller.forgotPassword
+  validateForgotPassword,
+  forgotPassword
 )
 
 /*
@@ -57,32 +74,8 @@ router.post(
 router.post(
   '/reset-password',
   trimRequest.all,
-  validate.resetPassword,
-  controller.resetPassword
-)
-
-/*
- * Patch role route
- */
-router.patch(
-  '/role',
-  requireAuth,
-  AuthController.roleAuthorization(['staff', 'admin']),
-  trimRequest.all,
-  validate.patchRole,
-  controller.patchRole
-)
-
-/*
- * Get new refresh token
- */
-router.post(
-  '/access-token',
-  requireAuth,
-  AuthController.roleAuthorization(['trial', 'user', 'staff', 'admin']),
-  trimRequest.all,
-  validate.getRefreshToken,
-  controller.getRefreshToken
+  validateResetPassword,
+  resetPassword
 )
 
 /*
@@ -91,9 +84,9 @@ router.post(
 router.post(
   '/logout',
   requireAuth,
-  AuthController.roleAuthorization(['trial', 'user', 'staff', 'admin']),
+  roleAuthorization(['user', 'staff', 'admin']),
   trimRequest.all,
-  controller.logout
+  logout
 )
 
 module.exports = router
